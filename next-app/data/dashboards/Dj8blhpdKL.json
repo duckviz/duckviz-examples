@@ -1,0 +1,51 @@
+{
+  "id": "Dj8blhpdKL",
+  "name": "HR Employees Dashboard",
+  "datasetSlug": "hr-employees",
+  "widgets": [
+    {
+      "id": "61m-_zqD",
+      "type": "line",
+      "title": "Salary Over Hire Date",
+      "description": "Trend of salary over the hire date of employees.",
+      "dataKey": "SELECT date_trunc('month', \"hire_date\") AS x, CAST(AVG(\"salary\") AS DOUBLE) AS value FROM \"t_hr_employees\" GROUP BY x ORDER BY x ASC",
+      "config": {}
+    },
+    {
+      "id": "jZlmhXk2",
+      "type": "scatter",
+      "title": "Salary vs Performance Score Correlation",
+      "description": "Correlation between employee salary and performance score.",
+      "dataKey": "SELECT CAST(\"salary\" AS DOUBLE) AS x, \"performance_score\" AS y FROM \"t_hr_employees\" GROUP BY \"salary\", \"performance_score\" ORDER BY x ASC, y ASC",
+      "config": {
+        "xAxisLabel": "Salary",
+        "yAxisLabel": "Performance Score"
+      }
+    },
+    {
+      "id": "tPj9FbhA",
+      "type": "heatmap",
+      "title": "Name × Department Heatmap",
+      "description": "A heatmap showing the distribution of employees across different departments.",
+      "dataKey": "SELECT \"name\" AS row, \"department\" AS col, CAST(COUNT(*) AS DOUBLE) AS value FROM \"t_hr_employees\" GROUP BY \"name\", \"department\" ORDER BY value DESC LIMIT 400",
+      "config": {}
+    },
+    {
+      "id": "tJ-nklYO",
+      "type": "stacked-bar",
+      "title": "Name Composition by Department",
+      "description": "This visualization shows the composition of employees by department.",
+      "dataKey": "SELECT \"department\" AS \"group\", \"name\" AS \"label\", CAST(COUNT(*) AS DOUBLE) AS \"value\" FROM \"t_hr_employees\" GROUP BY \"department\", \"name\" ORDER BY \"value\" DESC LIMIT 25",
+      "config": {}
+    },
+    {
+      "id": "VMesqKST",
+      "type": "area",
+      "title": "Performance Score Volume Over Hire Date",
+      "description": "This visualization shows the volume of performance scores over the hire date of employees.",
+      "dataKey": "SELECT date_trunc('month', \"hire_date\") AS x, CAST(SUM(\"performance_score\") AS DOUBLE) AS value FROM \"t_hr_employees\" GROUP BY x ORDER BY x ASC",
+      "config": {}
+    }
+  ],
+  "createdAt": "2026-04-17T14:44:20.560Z"
+}

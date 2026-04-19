@@ -1,0 +1,31 @@
+@import "tailwindcss";
+@import "@duckviz/ui/styles.css";
+@import "@duckviz/dashboard/styles.css";
+@import "@duckviz/report/styles.css";
+
+/*
+ * Chrome tokens alias directly to --app-* tokens set by DuckvizThemeProvider.
+ * One preset drives both the custom chrome (header/sidebar) and the embedded
+ * @duckviz/* packages, so they stay visually unified under any preset/mode.
+ */
+:root {
+  --background: var(--app-background-default, #ffffff);
+  --foreground: var(--app-text-default, #1f2328);
+  --surface: var(--app-surface-default, #ffffff);
+  --surface-hover: var(--app-surface-default-hover, #f6f8fa);
+  --border: var(--app-border-default, #d0d7de);
+  --muted: var(--app-text-secondary, #656d76);
+  --primary: var(--app-primary-default, #0969da);
+  --primary-hover: var(--app-primary-text-hover, #0550ae);
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: system-ui, -apple-system, sans-serif;
+}
