@@ -49,7 +49,12 @@ export function Sidebar({ expanded, onToggle }: SidebarProps) {
         style={{ background: "var(--surface)", color: "var(--muted)" }}
       >
         <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
-          <path d="M3 5h14M3 10h14M3 15h14" stroke="currentColor" strokeWidth="1.5" fill="none" />
+          <path
+            d="M3 5h14M3 10h14M3 15h14"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            fill="none"
+          />
         </svg>
       </button>
 
@@ -70,7 +75,7 @@ export function Sidebar({ expanded, onToggle }: SidebarProps) {
           style={{ borderBottom: "1px solid var(--border)" }}
           title="DuckViz Example"
         >
-          <span className="text-xl leading-none">🦆</span>
+          <span className="text-xl leading-none">🧩</span>
           {expanded && (
             <span
               className="truncate text-sm font-semibold"
@@ -110,7 +115,9 @@ export function Sidebar({ expanded, onToggle }: SidebarProps) {
                     title={db.name}
                     className="flex items-center gap-2.5 rounded-md px-1.5 py-1.5 text-sm transition-colors"
                     style={{
-                      background: active ? "var(--surface-hover)" : "transparent",
+                      background: active
+                        ? "var(--surface-hover)"
+                        : "transparent",
                       color: active ? "var(--foreground)" : "var(--muted)",
                     }}
                   >
@@ -120,9 +127,7 @@ export function Sidebar({ expanded, onToggle }: SidebarProps) {
                     >
                       {db.name.charAt(0).toUpperCase()}
                     </span>
-                    {expanded && (
-                      <span className="truncate">{db.name}</span>
-                    )}
+                    {expanded && <span className="truncate">{db.name}</span>}
                   </Link>
                 );
               })}

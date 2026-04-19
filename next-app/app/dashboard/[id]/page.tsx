@@ -1,5 +1,6 @@
 "use client";
 
+import { useCallback, useEffect, useRef } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { Dashboard } from "@duckviz/dashboard";
 import type { DashboardConfig as PkgDashboardConfig } from "@duckviz/dashboard";
@@ -10,6 +11,41 @@ export default function DashboardPage() {
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
   const { dashboard, error, ready, datasets } = useDashboardWithData(id);
+
+  // Debounce layout PATCH — onLayoutChange fires continuously during a drag.
+  const layoutTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  useEffect(
+    () => () => {
+      if (layoutTimerRef.current) clearTimeout(layoutTimerRef.current);
+    },
+    [],
+  );
+  const handleLayoutChange = useCallback(
+    (layouts: Array<{ id: string; x: number; y: number; w: number; h: number }>) => {
+      if (layoutTimerRef.current) clearTimeout(layoutTimerRef.current);
+      layoutTimerRef.current = setTimeout(() => {
+        fetch(`/api/dashboards/${id}`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ layouts }),
+        }).catch(() => {});
+      }, 400);
+    },
+    [id],
+  );
+
+  const handleWidgetError = useCallback(
+    (widgetId: string, message: string) => {
+      console.error(`[duckviz:dashboard] widget ${widgetId} failed: ${message}`);
+    },
+    [],
+  );
+
+  // Fires once all widgets have settled — good hook for telemetry,
+  // print automation, or hiding a full-dashboard loader overlay.
+  const handleReady = useCallback(() => {
+    console.info(`[duckviz:dashboard] ${id} ready (all widgets settled)`);
+  }, [id]);
 
   if (error) {
     return (
@@ -59,6 +95,7 @@ export default function DashboardPage() {
       description: w.description,
       dataKey: w.dataKey,
       config: w.config,
+      layout: w.layout,
     })),
   };
 
@@ -97,6 +134,9 @@ export default function DashboardPage() {
           config={config}
           datasets={datasets}
           dropTablesOnUnmount={true}
+          onLayoutChange={handleLayoutChange}
+          onWidgetError={handleWidgetError}
+          onReady={handleReady}
         />
       </div>
     </div>

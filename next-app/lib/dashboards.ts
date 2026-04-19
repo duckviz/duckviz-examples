@@ -14,6 +14,7 @@ export interface DashboardWidget {
   description: string;
   dataKey: string;
   config?: Record<string, unknown>;
+  layout?: { x: number; y: number; w: number; h: number };
 }
 
 export interface DashboardConfig {
