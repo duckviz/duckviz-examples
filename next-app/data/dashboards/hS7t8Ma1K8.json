@@ -1,0 +1,154 @@
+{
+  "id": "hS7t8Ma1K8",
+  "name": "Student Performance Dashboard",
+  "datasetSlug": "student-performance",
+  "widgets": [
+    {
+      "id": "bfau2PIS",
+      "type": "bar",
+      "title": "Final Score by School Name",
+      "description": "Average final score for students grouped by school name.",
+      "dataKey": "SELECT \"school_name\" AS label, CAST(AVG(\"final_score\") AS DOUBLE) AS value FROM \"t_student_performance\" GROUP BY \"school_name\" ORDER BY value DESC LIMIT 25",
+      "config": {},
+      "layout": {
+        "x": 4,
+        "y": 0,
+        "w": 8,
+        "h": 9
+      }
+    },
+    {
+      "id": "Dchqr4t2",
+      "type": "donut",
+      "title": "Final Score Distribution by Department",
+      "description": "Shows the proportion of total final scores aggregated by each department.",
+      "dataKey": "SELECT \"department\" AS label, CAST(SUM(TRY_CAST(\"final_score\" AS DOUBLE)) AS DOUBLE) AS value FROM \"t_student_performance\" GROUP BY \"department\" ORDER BY value DESC LIMIT 10",
+      "config": {},
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "w": 4,
+        "h": 9
+      }
+    },
+    {
+      "id": "F1TklNbO",
+      "type": "scatter",
+      "title": "Final Score vs Gpa Points Correlation",
+      "description": "Scatter plot showing the correlation between students' final scores and their GPA points.",
+      "dataKey": "SELECT CAST(\"final_score\" AS DOUBLE) AS x, \"gpa_points\" AS y, \"school_name\" AS col1 FROM \"t_student_performance\" WHERE \"final_score\" IS NOT NULL AND \"gpa_points\" IS NOT NULL LIMIT 1000",
+      "config": {
+        "xAxisLabel": "Final Score",
+        "yAxisLabel": "Gpa Points"
+      },
+      "layout": {
+        "x": 0,
+        "y": 19,
+        "w": 12,
+        "h": 9
+      }
+    },
+    {
+      "id": "ENboXQV5",
+      "type": "heatmap",
+      "title": "School Name × Department Heatmap",
+      "description": "Average GPA points by school name and department",
+      "dataKey": "SELECT \"school_name\" AS row, \"department\" AS col, CAST(AVG(\"gpa_points\") AS DOUBLE) AS value FROM \"t_student_performance\" GROUP BY \"school_name\", \"department\" ORDER BY value DESC LIMIT 400",
+      "config": {},
+      "layout": {
+        "x": 0,
+        "y": 9,
+        "w": 12,
+        "h": 10
+      }
+    },
+    {
+      "id": "oaqdDJAI",
+      "type": "horizontal-bar",
+      "title": "School Name Ranked by Gpa Points",
+      "description": "Average GPA points per school, ranked descending",
+      "dataKey": "SELECT \"school_name\" AS label, CAST(AVG(\"gpa_points\") AS DOUBLE) AS value FROM \"t_student_performance\" GROUP BY \"school_name\" ORDER BY value DESC LIMIT 25",
+      "config": {},
+      "layout": {
+        "x": 0,
+        "y": 28,
+        "w": 6,
+        "h": 9
+      }
+    },
+    {
+      "id": "jZIcrFKv",
+      "type": "stacked-bar",
+      "title": "School Name Composition by Department",
+      "description": "Shows the count of students per school broken down by department to visualize the composition of departments within each school.",
+      "dataKey": "SELECT \"school_name\" AS label, \"department\" AS \"group\", CAST(COUNT(*) AS DOUBLE) AS value FROM \"t_student_performance\" GROUP BY label, \"group\" ORDER BY value DESC LIMIT 25",
+      "config": {},
+      "layout": {
+        "x": 6,
+        "y": 28,
+        "w": 6,
+        "h": 9
+      }
+    },
+    {
+      "id": "qmobASXS",
+      "type": "treemap",
+      "title": "Attendance Pct Proportion by School Name",
+      "description": "Proportion of average attendance percentage grouped by each school name.",
+      "dataKey": "SELECT \"school_name\" AS label, AVG(\"attendance_pct\") AS value FROM \"t_student_performance\" GROUP BY \"school_name\" ORDER BY value DESC LIMIT 30",
+      "config": {},
+      "layout": {
+        "x": 0,
+        "y": 37,
+        "w": 12,
+        "h": 10
+      }
+    },
+    {
+      "id": "SmO7a2X2",
+      "type": "dumbbell",
+      "title": "Final Score vs Gpa Points by School Name",
+      "description": "Comparison of average final scores and average GPA points for students grouped by school name.",
+      "dataKey": "SELECT \"school_name\" AS label, CAST(AVG(TRY_CAST(\"final_score\" AS DOUBLE)) AS DOUBLE) AS value1, CAST(AVG(\"gpa_points\") AS DOUBLE) AS value2 FROM \"t_student_performance\" GROUP BY \"school_name\" ORDER BY (value1 + value2) DESC LIMIT 20",
+      "config": {
+        "value1Label": "Final Score",
+        "value2Label": "Gpa Points"
+      },
+      "layout": {
+        "x": 0,
+        "y": 47,
+        "w": 12,
+        "h": 9
+      }
+    },
+    {
+      "id": "bBRKzlZz",
+      "type": "table",
+      "title": "Data Overview Table",
+      "description": "A tabular overview of student performance data including demographics, academic scores, and attendance.",
+      "dataKey": "SELECT \"school_name\", \"district\", \"locale\", \"grade_level\", \"cohort_year\", \"semester\", \"subject\", \"final_score\", \"letter_grade\", \"gpa_points\", \"attendance_pct\", \"absences\", \"tardies\", \"study_hours_weekly\", \"has_tutoring\", \"iep_flag\", \"ell_flag\", \"free_reduced_lunch\", \"gender\" FROM \"t_student_performance\" LIMIT 20",
+      "config": {},
+      "layout": {
+        "x": 0,
+        "y": 56,
+        "w": 8,
+        "h": 10
+      }
+    },
+    {
+      "id": "yamijasi",
+      "type": "radar",
+      "title": "Multi-Metric Profile by School Name",
+      "description": "Comparison of average GPA points, average attendance percentage, and average weekly study hours across schools.",
+      "dataKey": "SELECT \"school_name\" AS axis, CAST(AVG(\"gpa_points\") AS DOUBLE) AS \"value\" FROM \"t_student_performance\" GROUP BY \"school_name\" UNION ALL SELECT \"school_name\" AS axis, CAST(AVG(\"attendance_pct\") AS DOUBLE) AS \"value\" FROM \"t_student_performance\" GROUP BY \"school_name\" UNION ALL SELECT \"school_name\" AS axis, CAST(AVG(\"study_hours_weekly\") AS DOUBLE) AS \"value\" FROM \"t_student_performance\" GROUP BY \"school_name\" ORDER BY \"value\" DESC LIMIT 12",
+      "config": {},
+      "layout": {
+        "x": 8,
+        "y": 56,
+        "w": 4,
+        "h": 10
+      }
+    }
+  ],
+  "createdAt": "2026-04-25T11:53:52.005Z"
+}

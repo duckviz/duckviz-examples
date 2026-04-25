@@ -1,0 +1,64 @@
+{
+  "id": "iP4J0voQPx",
+  "name": "IoT Sensors Dashboard",
+  "datasetSlug": "iot-sensors",
+  "widgets": [
+    {
+      "id": "D8xkKwNx",
+      "type": "line",
+      "title": "Reading Over Observation Date",
+      "description": "Average sensor reading aggregated by day over the observation date.",
+      "dataKey": "SELECT CAST(date_trunc('day', \"observation_date\") AS VARCHAR) AS x, CAST(AVG(\"reading\") AS DOUBLE) AS value FROM \"t_iot_sensors\" GROUP BY date_trunc('day', \"observation_date\") ORDER BY x ASC LIMIT 500",
+      "config": {},
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "w": 7,
+        "h": 9
+      }
+    },
+    {
+      "id": "3OQ4MEo2",
+      "type": "donut",
+      "title": "Reading Distribution by Sensor Type",
+      "description": "Proportion of readings grouped by sensor type from all available data.",
+      "dataKey": "SELECT \"sensor_type\" AS label, CAST(COUNT(*) AS DOUBLE) AS value FROM \"t_iot_sensors\" GROUP BY \"sensor_type\" ORDER BY value DESC LIMIT 8",
+      "config": {},
+      "layout": {
+        "x": 7,
+        "y": 0,
+        "w": 5,
+        "h": 9
+      }
+    },
+    {
+      "id": "Vn6rTl5D",
+      "type": "histogram",
+      "title": "Battery Pct Frequency Distribution",
+      "description": "Histogram showing the frequency distribution of battery percentage levels across IoT sensors.",
+      "dataKey": "SELECT CAST(CONCAT(CAST((\"battery_pct\" / 10) * 10 AS VARCHAR), '-', CAST(((\"battery_pct\" / 10) * 10 + 9) AS VARCHAR)) AS VARCHAR) AS bucket, CAST(COUNT(*) AS DOUBLE) AS count FROM \"t_iot_sensors\" WHERE \"battery_pct\" IS NOT NULL GROUP BY bucket ORDER BY CAST(SPLIT_PART(bucket, '-', 1) AS INTEGER) ASC LIMIT 100",
+      "config": {},
+      "layout": {
+        "x": 0,
+        "y": 9,
+        "w": 12,
+        "h": 9
+      }
+    },
+    {
+      "id": "hxTIsGqL",
+      "type": "heatmap",
+      "title": "Device Eui × Sensor Type Heatmap",
+      "description": "Average sensor reading values grouped by device EUI and sensor type.",
+      "dataKey": "SELECT \"device_eui\" AS row, \"sensor_type\" AS col, CAST(AVG(\"reading\") AS DOUBLE) AS value FROM \"t_iot_sensors\" GROUP BY \"device_eui\", \"sensor_type\" ORDER BY value DESC LIMIT 400",
+      "config": {},
+      "layout": {
+        "x": 0,
+        "y": 18,
+        "w": 12,
+        "h": 12
+      }
+    }
+  ],
+  "createdAt": "2026-04-25T10:21:07.003Z"
+}

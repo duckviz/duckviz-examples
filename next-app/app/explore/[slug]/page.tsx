@@ -13,7 +13,8 @@ export default function ExplorePage() {
   const router = useRouter();
 
   const meta = DATASETS.find((d) => d.slug === slug);
-  const { dashboards, createDashboard, addWidget } = useDashboardCrud(slug);
+  const { dashboards, createDashboard, addWidget, saveDashboardWithWidgets } =
+    useDashboardCrud(slug);
 
   const datasets = useMemo<DuckvizDataset[]>(() => {
     const toDataset = (d: (typeof DATASETS)[number]): DuckvizDataset => ({
@@ -96,6 +97,7 @@ export default function ExplorePage() {
         dashboards={dashboards}
         onCreateDashboard={createDashboard}
         onAddWidgetToDashboard={addWidget}
+        onSaveDashboardWithWidgets={saveDashboardWithWidgets}
         onNavigateToDashboard={handleNavigate}
         onDashboardSaved={handleDashboardSaved}
         onWidgetGenerated={handleWidgetGenerated}

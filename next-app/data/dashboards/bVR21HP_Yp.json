@@ -1,0 +1,224 @@
+{
+  "id": "bVR21HP_Yp",
+  "name": "Retail Inventory Dashboard",
+  "datasetSlug": "retail-inventory",
+  "widgets": [
+    {
+      "id": "ldlZ39wL",
+      "type": "donut",
+      "title": "Unit Cost Distribution by Category",
+      "description": "Proportion of total unit cost aggregated by product category.",
+      "dataKey": "SELECT \"category\" AS label, CAST(SUM(\"unit_cost\" * \"on_hand\") AS DOUBLE) AS value FROM \"t_retail_inventory\" GROUP BY \"category\" ORDER BY value DESC LIMIT 8",
+      "config": {},
+      "layout": {
+        "x": 5,
+        "y": 0,
+        "w": 7,
+        "h": 9
+      }
+    },
+    {
+      "id": "GQbhc1Pm",
+      "type": "bar",
+      "title": "Unit Cost by Product Name",
+      "description": "Average unit cost for each product name in the inventory",
+      "dataKey": "SELECT \"product_name\" AS label, AVG(\"unit_cost\") AS value FROM \"t_retail_inventory\" GROUP BY \"product_name\" ORDER BY value DESC LIMIT 25",
+      "config": {},
+      "layout": {
+        "x": 0,
+        "y": 9,
+        "w": 6,
+        "h": 9
+      }
+    },
+    {
+      "id": "GLaumYTg",
+      "type": "line",
+      "title": "Unit Cost Over Last Received",
+      "description": "Average unit cost trend over time based on last received dates.",
+      "dataKey": "SELECT CAST(date_trunc('month', \"last_received\") AS VARCHAR) AS x, AVG(\"unit_cost\") AS value FROM \"t_retail_inventory\" WHERE \"last_received\" IS NOT NULL GROUP BY date_trunc('month', \"last_received\") ORDER BY x ASC LIMIT 500",
+      "config": {},
+      "layout": {
+        "x": 6,
+        "y": 9,
+        "w": 6,
+        "h": 9
+      }
+    },
+    {
+      "id": "wsAArvN9",
+      "type": "big-number",
+      "title": "Total Unit Cost",
+      "description": "Sum of all unit costs across inventory items",
+      "dataKey": "SELECT 'Total Unit Cost' AS label, CAST(SUM(\"unit_cost\") AS DOUBLE) AS value, 0.0 AS delta, 'positive' AS sentiment, 'overall' AS delta_basis FROM \"t_retail_inventory\" LIMIT 1",
+      "config": {},
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "w": 5,
+        "h": 9
+      }
+    },
+    {
+      "id": "Mgzsq3cE",
+      "type": "multi-line",
+      "title": "List Price by Product Name Over Last Received",
+      "description": "Trend of average list price for each product name over time based on last received date, aggregated monthly.",
+      "dataKey": "SELECT CAST(date_trunc('month', \"last_received\") AS VARCHAR) AS x, \"product_name\" AS series, AVG(\"list_price\") AS value FROM \"t_retail_inventory\" WHERE \"last_received\" IS NOT NULL GROUP BY x, series ORDER BY x ASC, series ASC LIMIT 500",
+      "config": {},
+      "layout": {
+        "x": 0,
+        "y": 18,
+        "w": 6,
+        "h": 9
+      }
+    },
+    {
+      "id": "NG6se5cv",
+      "type": "scatter",
+      "title": "Unit Cost vs List Price Correlation",
+      "description": "Scatter plot showing the correlation between unit cost and list price for products in inventory.",
+      "dataKey": "SELECT \"sku\" AS \"col1\", \"unit_cost\" AS \"x\", \"list_price\" AS \"y\" FROM \"t_retail_inventory\" WHERE \"unit_cost\" IS NOT NULL AND \"list_price\" IS NOT NULL LIMIT 1000",
+      "config": {
+        "xAxisLabel": "Unit Cost",
+        "yAxisLabel": "List Price"
+      },
+      "layout": {
+        "x": 0,
+        "y": 27,
+        "w": 6,
+        "h": 9
+      }
+    },
+    {
+      "id": "o8rWNblk",
+      "type": "area",
+      "title": "List Price Volume Over Last Received",
+      "description": "Shows the total list price volume aggregated by month based on the last received date.",
+      "dataKey": "SELECT CAST(date_trunc('month', \"last_received\") AS VARCHAR) AS x, CAST(SUM(\"list_price\" * \"on_hand\") AS DOUBLE) AS value FROM \"t_retail_inventory\" GROUP BY x ORDER BY x ASC",
+      "config": {},
+      "layout": {
+        "x": 6,
+        "y": 27,
+        "w": 6,
+        "h": 9
+      }
+    },
+    {
+      "id": "zht_0BqS",
+      "type": "histogram",
+      "title": "List Price Frequency Distribution",
+      "description": "Distribution of products by list price buckets of $10 intervals",
+      "dataKey": "SELECT CONCAT('$', CAST(FLOOR(\"list_price\" / 10) * 10 AS VARCHAR), ' - $', CAST(FLOOR(\"list_price\" / 10) * 10 + 9.99 AS VARCHAR)) AS \"bucket\", CAST(COUNT(*) AS DOUBLE) AS \"count\" FROM \"t_retail_inventory\" WHERE \"list_price\" IS NOT NULL GROUP BY FLOOR(\"list_price\" / 10) ORDER BY FLOOR(\"list_price\" / 10) ASC LIMIT 100",
+      "config": {},
+      "layout": {
+        "x": 6,
+        "y": 18,
+        "w": 6,
+        "h": 9
+      }
+    },
+    {
+      "id": "D5Kg1x4M",
+      "type": "heatmap",
+      "title": "Product Name × Category Heatmap",
+      "description": "Heatmap showing total on-hand inventory by product name and category.",
+      "dataKey": "SELECT \"product_name\" AS row, \"category\" AS col, CAST(SUM(\"on_hand\") AS DOUBLE) AS value FROM \"t_retail_inventory\" GROUP BY row, col ORDER BY value DESC LIMIT 400",
+      "config": {},
+      "layout": {
+        "x": 0,
+        "y": 45,
+        "w": 12,
+        "h": 10
+      }
+    },
+    {
+      "id": "JOJL01DR",
+      "type": "horizontal-bar",
+      "title": "Product Name Ranked by List Price",
+      "description": "Top 25 products ranked by their list price in descending order.",
+      "dataKey": "SELECT \"product_name\" AS label, CAST(\"list_price\" AS DOUBLE) AS value FROM \"t_retail_inventory\" ORDER BY value DESC LIMIT 25",
+      "config": {},
+      "layout": {
+        "x": 0,
+        "y": 55,
+        "w": 6,
+        "h": 9
+      }
+    },
+    {
+      "id": "STRHY2Qj",
+      "type": "stacked-bar",
+      "title": "Product Name Composition by Category",
+      "description": "Stacked bar chart showing the composition of product names within each category based on total on-hand inventory.",
+      "dataKey": "SELECT \"category\" AS label, \"product_name\" AS \"group\", CAST(SUM(\"on_hand\") AS DOUBLE) AS value FROM \"t_retail_inventory\" GROUP BY label, \"group\" ORDER BY value DESC LIMIT 25",
+      "config": {},
+      "layout": {
+        "x": 0,
+        "y": 36,
+        "w": 12,
+        "h": 9
+      }
+    },
+    {
+      "id": "4fUJmMxO",
+      "type": "stacked-area",
+      "title": "Product Name Composition Over Last Received",
+      "description": "Stacked area chart showing the composition of available inventory by product name over time based on last_received date truncated by month.",
+      "dataKey": "SELECT CAST(date_trunc('month', \"last_received\") AS VARCHAR) AS x, \"product_name\" AS series, CAST(SUM(\"available\") AS DOUBLE) AS value FROM \"t_retail_inventory\" GROUP BY x, series ORDER BY x ASC, series ASC LIMIT 500",
+      "config": {},
+      "layout": {
+        "x": 0,
+        "y": 64,
+        "w": 12,
+        "h": 9
+      }
+    },
+    {
+      "id": "JMiYw6E7",
+      "type": "dumbbell",
+      "title": "Unit Cost vs List Price by Product Name",
+      "description": "Compare unit cost and list price for each product to visualize pricing margins.",
+      "dataKey": "SELECT \"product_name\" AS label, CAST(AVG(\"unit_cost\") AS DOUBLE) AS value1, CAST(AVG(\"list_price\") AS DOUBLE) AS value2 FROM \"t_retail_inventory\" GROUP BY \"product_name\" ORDER BY (value1 + value2) DESC LIMIT 20",
+      "config": {
+        "value1Label": "Unit Cost",
+        "value2Label": "List Price"
+      },
+      "layout": {
+        "x": 6,
+        "y": 55,
+        "w": 6,
+        "h": 9
+      }
+    },
+    {
+      "id": "1wsActBn",
+      "type": "treemap",
+      "title": "Avg Daily Demand Proportion by Product Name",
+      "description": "Shows the proportion of average daily demand for each product name relative to the total average daily demand.",
+      "dataKey": "SELECT \"product_name\" AS label, CAST(SUM(\"avg_daily_demand\") AS DOUBLE) AS value FROM \"t_retail_inventory\" GROUP BY \"product_name\" ORDER BY value DESC LIMIT 30",
+      "config": {},
+      "layout": {
+        "x": 0,
+        "y": 73,
+        "w": 12,
+        "h": 10
+      }
+    },
+    {
+      "id": "LLm4nHhq",
+      "type": "radar",
+      "title": "Multi-Metric Profile by Product Name",
+      "description": "Comparison of average margin percentage, average days of supply, and annual turnover by product name.",
+      "dataKey": "SELECT \"product_name\" AS axis, CAST(AVG(\"margin_pct\") AS DOUBLE) AS \"value\" FROM \"t_retail_inventory\" GROUP BY \"product_name\" ORDER BY \"value\" DESC LIMIT 12",
+      "config": {},
+      "layout": {
+        "x": 0,
+        "y": 83,
+        "w": 12,
+        "h": 9
+      }
+    }
+  ],
+  "createdAt": "2026-04-25T11:09:41.489Z"
+}

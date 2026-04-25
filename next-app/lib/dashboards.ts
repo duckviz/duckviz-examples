@@ -1,7 +1,22 @@
 import { readFileSync, writeFileSync, readdirSync, unlinkSync, existsSync, mkdirSync } from "fs";
 import { join } from "path";
+import { DATASETS } from "@/lib/datasets/registry";
 
 const DIR = join(process.cwd(), "data", "dashboards");
+
+/**
+ * Map a widget's DuckDB SQL back to the dataset slug it queries against.
+ * Used to "promote" a dashboard from `datasetSlug: "all"` (created from the
+ * home page where multiple datasets are mounted) to the concrete slug once
+ * widgets land on it. Matches the first quoted `t_*` table name and looks
+ * it up in the dataset registry.
+ */
+export function deriveSlugFromSql(sql: string): string | null {
+  const match = sql.match(/"(t_[a-z0-9_]+)"/i);
+  if (!match) return null;
+  const tableName = match[1];
+  return DATASETS.find((d) => d.tableName === tableName)?.slug ?? null;
+}
 
 function ensureDir() {
   if (!existsSync(DIR)) mkdirSync(DIR, { recursive: true });

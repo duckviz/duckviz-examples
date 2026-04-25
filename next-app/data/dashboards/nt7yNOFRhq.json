@@ -1,0 +1,196 @@
+{
+  "id": "nt7yNOFRhq",
+  "name": "Marketing Campaigns Dashboard",
+  "datasetSlug": "marketing-campaigns",
+  "widgets": [
+    {
+      "id": "oxQ1WBmW",
+      "type": "scatter",
+      "title": "Budget vs Spend Correlation",
+      "description": "Scatter plot showing the correlation between campaign budget and actual spend.",
+      "dataKey": "SELECT \"campaign_name\" AS col1, CAST(\"budget\" AS DOUBLE) AS x, \"spend\" AS y FROM \"t_marketing_campaigns\" WHERE \"budget\" IS NOT NULL AND \"spend\" IS NOT NULL LIMIT 1000",
+      "config": {
+        "xAxisLabel": "Budget",
+        "yAxisLabel": "Spend"
+      },
+      "layout": {
+        "x": 0,
+        "y": 6,
+        "w": 12,
+        "h": 9
+      }
+    },
+    {
+      "id": "3K8GQx7y",
+      "type": "bar",
+      "title": "Budget by Campaign Name",
+      "description": "Total budget allocated for each campaign, grouped by campaign name.",
+      "dataKey": "SELECT \"campaign_name\" AS label, CAST(SUM(\"budget\") AS DOUBLE) AS value FROM \"t_marketing_campaigns\" GROUP BY \"campaign_name\" ORDER BY value DESC LIMIT 25",
+      "config": {},
+      "layout": {
+        "x": 6,
+        "y": 15,
+        "w": 6,
+        "h": 7
+      }
+    },
+    {
+      "id": "O6ZiaWHZ",
+      "type": "line",
+      "title": "Budget Over Start Date",
+      "description": "Trend of total budget allocated over time by start date month.",
+      "dataKey": "SELECT CAST(date_trunc('month', \"start_date\") AS VARCHAR) AS x, CAST(SUM(\"budget\") AS DOUBLE) AS value FROM \"t_marketing_campaigns\" GROUP BY date_trunc('month', \"start_date\") ORDER BY x ASC LIMIT 500",
+      "config": {},
+      "layout": {
+        "x": 4,
+        "y": 0,
+        "w": 8,
+        "h": 6
+      }
+    },
+    {
+      "id": "UnEbQeJY",
+      "type": "multi-line",
+      "title": "Spend by Campaign Name Over Start Date",
+      "description": "Trend of total spend for each campaign name aggregated by month of start date.",
+      "dataKey": "SELECT CAST(date_trunc('month', \"start_date\") AS VARCHAR) AS \"x\", \"campaign_name\" AS \"series\", CAST(SUM(\"spend\") AS DOUBLE) AS \"value\" FROM \"t_marketing_campaigns\" GROUP BY \"x\", \"series\" ORDER BY \"x\" ASC, \"series\" ASC LIMIT 500",
+      "config": {},
+      "layout": {
+        "x": 0,
+        "y": 15,
+        "w": 6,
+        "h": 7
+      }
+    },
+    {
+      "id": "D257MBxM",
+      "type": "heatmap",
+      "title": "Campaign Name × Channel Heatmap",
+      "description": "Heatmap showing total spend by campaign name and channel.",
+      "dataKey": "SELECT \"campaign_name\" AS row, \"channel\" AS col, CAST(SUM(\"spend\") AS DOUBLE) AS value FROM \"t_marketing_campaigns\" GROUP BY \"campaign_name\", \"channel\" ORDER BY value DESC LIMIT 400",
+      "config": {},
+      "layout": {
+        "x": 0,
+        "y": 22,
+        "w": 7,
+        "h": 9
+      }
+    },
+    {
+      "id": "sknq7sIs",
+      "type": "big-number",
+      "title": "Total Budget",
+      "description": "Sum of all campaign budgets across all time.",
+      "dataKey": "SELECT 'Total Budget' AS label, CAST(SUM(\"budget\") AS DOUBLE) AS value, 0.0 AS delta, 'positive' AS sentiment, 'overall' AS delta_basis FROM \"t_marketing_campaigns\" LIMIT 1",
+      "config": {},
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "w": 4,
+        "h": 6
+      }
+    },
+    {
+      "id": "HKvZNc5Y",
+      "type": "stacked-bar",
+      "title": "Campaign Name Composition by Channel",
+      "description": "Stacked bar chart showing total spend per campaign name broken down by channel.",
+      "dataKey": "SELECT \"campaign_name\" AS label, \"channel_label\" AS \"group\", CAST(SUM(\"spend\") AS DOUBLE) AS value FROM \"t_marketing_campaigns\" GROUP BY label, \"group\" ORDER BY value DESC LIMIT 25",
+      "config": {},
+      "layout": {
+        "x": 6,
+        "y": 40,
+        "w": 6,
+        "h": 9
+      }
+    },
+    {
+      "id": "T8fa7lEY",
+      "type": "donut",
+      "title": "Budget Distribution by Channel",
+      "description": "Shows the proportion of total budget allocated to each marketing channel.",
+      "dataKey": "SELECT \"channel_label\" AS label, CAST(SUM(\"budget\") AS DOUBLE) AS value FROM \"t_marketing_campaigns\" GROUP BY \"channel_label\" ORDER BY value DESC LIMIT 10",
+      "config": {},
+      "layout": {
+        "x": 7,
+        "y": 22,
+        "w": 5,
+        "h": 9
+      }
+    },
+    {
+      "id": "eudJ4DTU",
+      "type": "dumbbell",
+      "title": "Budget vs Spend by Campaign Name",
+      "description": "Compare the allocated budget against actual spend for each marketing campaign.",
+      "dataKey": "SELECT \"campaign_name\" AS label, CAST(SUM(\"budget\") AS DOUBLE) AS value1, CAST(SUM(\"spend\") AS DOUBLE) AS value2 FROM \"t_marketing_campaigns\" GROUP BY \"campaign_name\" ORDER BY (value1 + value2) DESC LIMIT 20",
+      "config": {
+        "value1Label": "Budget",
+        "value2Label": "Spend"
+      },
+      "layout": {
+        "x": 0,
+        "y": 49,
+        "w": 12,
+        "h": 9
+      }
+    },
+    {
+      "id": "lJow52tA",
+      "type": "area",
+      "title": "Spend Volume Over Start Date",
+      "description": "Total spend aggregated by month of campaign start date",
+      "dataKey": "SELECT CAST(date_trunc('month', \"start_date\") AS VARCHAR) AS x, CAST(SUM(\"spend\") AS DOUBLE) AS value FROM \"t_marketing_campaigns\" GROUP BY date_trunc('month', \"start_date\") ORDER BY x ASC LIMIT 500",
+      "config": {},
+      "layout": {
+        "x": 6,
+        "y": 31,
+        "w": 6,
+        "h": 9
+      }
+    },
+    {
+      "id": "AaJAseab",
+      "type": "horizontal-bar",
+      "title": "Campaign Name Ranked by Spend",
+      "description": "Top 25 campaigns ranked by total spend amount",
+      "dataKey": "SELECT \"campaign_name\" AS label, CAST(SUM(\"spend\") AS DOUBLE) AS value FROM \"t_marketing_campaigns\" GROUP BY \"campaign_name\" ORDER BY value DESC LIMIT 25",
+      "config": {},
+      "layout": {
+        "x": 0,
+        "y": 31,
+        "w": 6,
+        "h": 18
+      }
+    },
+    {
+      "id": "RzCXehz9",
+      "type": "treemap",
+      "title": "Impressions Proportion by Campaign Name",
+      "description": "Shows the relative number of impressions for each campaign name as a treemap.",
+      "dataKey": "SELECT \"campaign_name\" AS label, CAST(SUM(\"impressions\") AS DOUBLE) AS value FROM \"t_marketing_campaigns\" GROUP BY \"campaign_name\" ORDER BY value DESC LIMIT 30",
+      "config": {},
+      "layout": {
+        "x": 0,
+        "y": 58,
+        "w": 6,
+        "h": 10
+      }
+    },
+    {
+      "id": "TcErFtIU",
+      "type": "stacked-area",
+      "title": "Campaign Name Composition Over Start Date",
+      "description": "Stacked area chart showing total spend composition by campaign name over months based on campaign start dates.",
+      "dataKey": "SELECT date_trunc('month', \"start_date\")::VARCHAR AS \"x\", \"campaign_name\" AS \"series\", CAST(SUM(\"spend\") AS DOUBLE) AS \"value\" FROM \"t_marketing_campaigns\" GROUP BY \"x\", \"series\" ORDER BY \"x\" ASC, \"series\" ASC",
+      "config": {},
+      "layout": {
+        "x": 6,
+        "y": 58,
+        "w": 6,
+        "h": 10
+      }
+    }
+  ],
+  "createdAt": "2026-04-25T10:23:44.750Z"
+}

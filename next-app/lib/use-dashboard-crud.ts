@@ -9,6 +9,15 @@ interface DashboardRef {
   name: string;
 }
 
+interface SaveWidgetInput {
+  type: string;
+  title: string;
+  description?: string;
+  duckdbQuery?: string;
+  config?: Record<string, unknown>;
+  layout?: { x: number; y: number; w: number; h: number };
+}
+
 /**
  * Manages dashboard CRUD for the explore page — loading the list,
  * creating new dashboards, and adding widgets.
@@ -62,5 +71,33 @@ export function useDashboardCrud(datasetSlug: string) {
     [],
   );
 
-  return { dashboards, createDashboard, addWidget };
+  // Batch save for the AI builder. One POST creates the dashboard and inserts
+  // every widget atomically — matches Explorer 0.17.0's `onSaveDashboardWithWidgets`
+  // contract, which collapses the previous N+1 round-trips (1 create + N
+  // per-widget PATCHes) into a single request.
+  const saveDashboardWithWidgets = useCallback(
+    (payload: {
+      name: string;
+      description?: string;
+      widgets: SaveWidgetInput[];
+    }): string => {
+      const id = nanoid(10);
+      setDashboards((prev) => [...prev, { id, name: payload.name }]);
+      fetch("/api/dashboards", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          id,
+          name: payload.name,
+          description: payload.description,
+          datasetSlug,
+          widgets: payload.widgets,
+        }),
+      }).catch(() => {});
+      return id;
+    },
+    [datasetSlug],
+  );
+
+  return { dashboards, createDashboard, addWidget, saveDashboardWithWidgets };
 }

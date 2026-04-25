@@ -1,0 +1,123 @@
+{
+  "id": "RHvIK2cS9H",
+  "name": "Real Estate Listings Dashboard",
+  "datasetSlug": "real-estate",
+  "widgets": [
+    {
+      "id": "o-GaR7FP",
+      "type": "geo-map",
+      "title": "Geographic Distribution by Latitude",
+      "description": "Bubble map showing the count of real estate listings aggregated by latitude and longitude, sized by the number of listings at each location.",
+      "dataKey": "SELECT \"latitude\" AS lat, \"longitude\" AS lon, CONCAT(\"city\", ', ', \"state\") AS label, CAST(COUNT(*) AS DOUBLE) AS value FROM \"t_real_estate\" GROUP BY lat, lon, label ORDER BY value DESC LIMIT 500",
+      "config": {},
+      "layout": {
+        "x": 4,
+        "y": 0,
+        "w": 8,
+        "h": 15
+      }
+    },
+    {
+      "id": "KjEj3SSq",
+      "type": "bar",
+      "title": "Price Per Sqft Usd by City",
+      "description": "Average price per square foot in USD for properties grouped by city.",
+      "dataKey": "SELECT \"city\" AS label, AVG(CAST(\"price_per_sqft_usd\" AS DOUBLE)) AS value FROM \"t_real_estate\" GROUP BY \"city\" ORDER BY value DESC LIMIT 25",
+      "config": {},
+      "layout": {
+        "x": 6,
+        "y": 15,
+        "w": 6,
+        "h": 8
+      }
+    },
+    {
+      "id": "IESiPPYs",
+      "type": "big-number",
+      "title": "Total Price Per Sqft Usd",
+      "description": "Average price per square foot in USD for all listings",
+      "dataKey": "SELECT 'Average Price Per Sqft USD' AS label, CAST(AVG(\"price_per_sqft_usd\") AS DOUBLE) AS value, 0.0 AS delta, 'positive' AS sentiment, 'overall' AS delta_basis FROM \"t_real_estate\" LIMIT 1",
+      "config": {},
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "w": 4,
+        "h": 6
+      }
+    },
+    {
+      "id": "f0UkTI96",
+      "type": "stacked-bar",
+      "title": "City Composition by State",
+      "description": "Stacked bar chart showing the count of listings per city grouped by state.",
+      "dataKey": "SELECT \"state\" AS label, \"city\" AS \"group\", CAST(COUNT(*) AS DOUBLE) AS value FROM \"t_real_estate\" GROUP BY label, \"group\" ORDER BY value DESC LIMIT 25",
+      "config": {},
+      "layout": {
+        "x": 6,
+        "y": 23,
+        "w": 6,
+        "h": 8
+      }
+    },
+    {
+      "id": "5U2T2-ue",
+      "type": "area",
+      "title": "Price Reduced Count Volume Over Listed Date",
+      "description": "Shows the total price reduced count aggregated by month of the listing date.",
+      "dataKey": "SELECT date_trunc('month', \"listed_date\")::VARCHAR AS x, CAST(SUM(\"price_reduced_count\") AS DOUBLE) AS value FROM \"t_real_estate\" GROUP BY x ORDER BY x ASC",
+      "config": {},
+      "layout": {
+        "x": 0,
+        "y": 31,
+        "w": 12,
+        "h": 6
+      }
+    },
+    {
+      "id": "uMhEgzjE",
+      "type": "horizontal-bar",
+      "title": "City Ranked by Price Reduced Count",
+      "description": "Total price reduced count aggregated by city, showing cities with the highest number of price reductions.",
+      "dataKey": "SELECT \"city\" AS label, CAST(SUM(\"price_reduced_count\") AS DOUBLE) AS value FROM \"t_real_estate\" GROUP BY \"city\" ORDER BY value DESC LIMIT 25",
+      "config": {},
+      "layout": {
+        "x": 0,
+        "y": 15,
+        "w": 6,
+        "h": 16
+      }
+    },
+    {
+      "id": "HQey7KWP",
+      "type": "radar",
+      "title": "Multi-Metric Profile by City",
+      "description": "Comparison of average price per sqft, average days on market, average bedrooms, and average bathrooms across top 12 cities by listing count.",
+      "dataKey": "SELECT \"city\" AS axis, CAST(AVG(\"price_per_sqft_usd\") AS DOUBLE) AS value FROM \"t_real_estate\" GROUP BY \"city\" ORDER BY value DESC LIMIT 12",
+      "config": {},
+      "layout": {
+        "x": 0,
+        "y": 6,
+        "w": 4,
+        "h": 9
+      }
+    },
+    {
+      "id": "EgWUx7ch",
+      "type": "dumbbell",
+      "title": "Price Per Sqft Usd vs Price Reduced Count by City",
+      "description": "Comparison of average price per square foot and average price reduced count for properties grouped by city.",
+      "dataKey": "SELECT \"city\" AS label, AVG(CAST(\"price_per_sqft_usd\" AS DOUBLE)) AS value1, AVG(CAST(\"price_reduced_count\" AS DOUBLE)) AS value2 FROM \"t_real_estate\" GROUP BY \"city\" ORDER BY (value1 + value2) DESC LIMIT 20",
+      "config": {
+        "value1Label": "Price Per Sqft Usd",
+        "value2Label": "Price Reduced Count"
+      },
+      "layout": {
+        "x": 0,
+        "y": 37,
+        "w": 12,
+        "h": 9
+      }
+    }
+  ],
+  "createdAt": "2026-04-25T11:51:13.852Z"
+}

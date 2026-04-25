@@ -1,17 +1,11 @@
 import { NextResponse } from "next/server";
 import { nanoid } from "nanoid";
-import { getDashboard, saveDashboard, deleteDashboard } from "@/lib/dashboards";
-import { DATASETS } from "@/lib/datasets/registry";
-
-// Home page creates dashboards with datasetSlug "all" because it hosts
-// multiple datasets. The real slug is knowable only once a widget is
-// added — the widget's SQL references exactly one DuckDB table.
-function deriveSlugFromSql(sql: string): string | null {
-  const match = sql.match(/"(t_[a-z0-9_]+)"/i);
-  if (!match) return null;
-  const tableName = match[1];
-  return DATASETS.find((d) => d.tableName === tableName)?.slug ?? null;
-}
+import {
+  getDashboard,
+  saveDashboard,
+  deleteDashboard,
+  deriveSlugFromSql,
+} from "@/lib/dashboards";
 
 export async function GET(
   _request: Request,
@@ -21,6 +15,20 @@ export async function GET(
   const db = getDashboard(id);
   if (!db) return NextResponse.json({ error: "Not found" }, { status: 404 });
   return NextResponse.json(db);
+}
+
+// Beacon-tunneled PATCH: the dashboard page uses navigator.sendBeacon on
+// unmount/pagehide to flush a pending layout save. sendBeacon only supports
+// POST, so we accept POST + `?_method=PATCH` and forward to the PATCH handler.
+export async function POST(
+  request: Request,
+  ctx: { params: Promise<{ id: string }> },
+) {
+  const url = new URL(request.url);
+  if (url.searchParams.get("_method") === "PATCH") {
+    return PATCH(request, ctx);
+  }
+  return NextResponse.json({ error: "Method not allowed" }, { status: 405 });
 }
 
 export async function PATCH(

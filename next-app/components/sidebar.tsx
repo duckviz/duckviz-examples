@@ -21,12 +21,7 @@ const AVATAR_COLORS = [
   "#db2777",
 ];
 
-interface SidebarProps {
-  expanded: boolean;
-  onToggle: () => void;
-}
-
-export function Sidebar({ expanded, onToggle }: SidebarProps) {
+export function Sidebar() {
   const pathname = usePathname();
   const [dashboards, setDashboards] = useState<DashboardEntry[]>([]);
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -37,8 +32,6 @@ export function Sidebar({ expanded, onToggle }: SidebarProps) {
       .then((d) => setDashboards(d))
       .catch(() => {});
   }, [pathname]);
-
-  const width = expanded ? 224 : 56;
 
   return (
     <>
@@ -59,11 +52,10 @@ export function Sidebar({ expanded, onToggle }: SidebarProps) {
       </button>
 
       <aside
-        className={`fixed left-0 top-0 z-40 flex h-screen flex-col transition-[width,transform] duration-200 ${
+        className={`fixed left-0 top-0 z-40 flex h-screen w-56 flex-col transition-transform duration-200 ${
           mobileOpen ? "translate-x-0" : "-translate-x-full"
         } md:translate-x-0`}
         style={{
-          width,
           background: "var(--surface)",
           borderRight: "1px solid var(--border)",
         }}
@@ -76,33 +68,27 @@ export function Sidebar({ expanded, onToggle }: SidebarProps) {
           title="DuckViz Example"
         >
           <span className="text-xl leading-none">🧩</span>
-          {expanded && (
-            <span
-              className="truncate text-sm font-semibold"
-              style={{ color: "var(--foreground)" }}
-            >
-              DuckViz
-            </span>
-          )}
+          <span
+            className="truncate text-sm font-semibold"
+            style={{ color: "var(--foreground)" }}
+          >
+            DuckViz
+          </span>
         </Link>
 
         {/* Dashboards */}
         <div className="flex-1 overflow-y-auto overflow-x-hidden py-3">
-          {expanded && (
-            <p
-              className="mb-2 px-3 text-[10px] font-medium tracking-wider uppercase"
-              style={{ color: "var(--muted)" }}
-            >
-              Dashboards
-            </p>
-          )}
+          <p
+            className="mb-2 px-3 text-[10px] font-medium tracking-wider uppercase"
+            style={{ color: "var(--muted)" }}
+          >
+            Dashboards
+          </p>
 
           {dashboards.length === 0 ? (
-            expanded ? (
-              <p className="px-3 text-xs" style={{ color: "var(--muted)" }}>
-                No dashboards yet. Create one from the explorer.
-              </p>
-            ) : null
+            <p className="px-3 text-xs" style={{ color: "var(--muted)" }}>
+              No dashboards yet. Create one from the explorer.
+            </p>
           ) : (
             <nav className="space-y-0.5 px-2">
               {dashboards.map((db, i) => {
@@ -127,42 +113,13 @@ export function Sidebar({ expanded, onToggle }: SidebarProps) {
                     >
                       {db.name.charAt(0).toUpperCase()}
                     </span>
-                    {expanded && <span className="truncate">{db.name}</span>}
+                    <span className="truncate">{db.name}</span>
                   </Link>
                 );
               })}
             </nav>
           )}
         </div>
-
-        {/* Toggle */}
-        <button
-          onClick={onToggle}
-          aria-label={expanded ? "Collapse sidebar" : "Expand sidebar"}
-          title={expanded ? "Collapse" : "Expand"}
-          className="flex h-10 items-center justify-center transition-colors hover:opacity-80"
-          style={{
-            borderTop: "1px solid var(--border)",
-            color: "var(--muted)",
-          }}
-        >
-          <svg
-            width="16"
-            height="16"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            style={{
-              transform: expanded ? "rotate(180deg)" : "none",
-              transition: "transform 200ms",
-            }}
-          >
-            <polyline points="9 18 15 12 9 6" />
-          </svg>
-        </button>
       </aside>
     </>
   );

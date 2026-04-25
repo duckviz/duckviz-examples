@@ -1,0 +1,137 @@
+{
+  "id": "BQt7c8JMLK",
+  "name": "HR Employees Dashboard",
+  "datasetSlug": "hr-employees",
+  "widgets": [
+    {
+      "id": "Rsnpzg9D",
+      "type": "donut",
+      "title": "Base Salary Distribution by Last Name",
+      "description": "Shows the proportion of total base salary contributed by each last name, limited to the top 10 last names by total base salary.",
+      "dataKey": "SELECT \"last_name\" AS label, CAST(SUM(\"base_salary\") AS DOUBLE) AS value FROM \"t_hr_employees\" GROUP BY \"last_name\" ORDER BY value DESC LIMIT 10",
+      "config": {},
+      "layout": {
+        "x": 0,
+        "y": 6,
+        "w": 4,
+        "h": 8
+      }
+    },
+    {
+      "id": "6p-WRGdV",
+      "type": "line",
+      "title": "Base Salary Over Hire Date",
+      "description": "Average base salary of employees aggregated by hire month.",
+      "dataKey": "SELECT CAST(date_trunc('month', \"hire_date\") AS VARCHAR) AS x, CAST(AVG(\"base_salary\") AS DOUBLE) AS value FROM \"t_hr_employees\" GROUP BY x ORDER BY x ASC LIMIT 500",
+      "config": {},
+      "layout": {
+        "x": 4,
+        "y": 0,
+        "w": 8,
+        "h": 8
+      }
+    },
+    {
+      "id": "XbLlsbjj",
+      "type": "histogram",
+      "title": "Bonus Amount Frequency Distribution",
+      "description": "Distribution of employees by bonus amount buckets of $5000 increments",
+      "dataKey": "SELECT CONCAT('$', CAST(5000 * FLOOR(COALESCE(\"bonus_amount\", 0) / 5000) AS VARCHAR), ' - $', CAST(5000 * FLOOR(COALESCE(\"bonus_amount\", 0) / 5000) + 4999 AS VARCHAR)) AS \"bucket\", CAST(COUNT(*) AS DOUBLE) AS \"count\" FROM \"t_hr_employees\" GROUP BY FLOOR(COALESCE(\"bonus_amount\", 0) / 5000) ORDER BY FLOOR(COALESCE(\"bonus_amount\", 0) / 5000) ASC LIMIT 100",
+      "config": {},
+      "layout": {
+        "x": 5,
+        "y": 33,
+        "w": 7,
+        "h": 8
+      }
+    },
+    {
+      "id": "c25quaxx",
+      "type": "big-number",
+      "title": "Total Base Salary",
+      "description": "Sum of all employees' base salaries across the entire dataset.",
+      "dataKey": "SELECT 'Total Base Salary' AS label, CAST(SUM(\"base_salary\") AS DOUBLE) AS value, 0.0 AS delta, 'positive' AS sentiment, 'overall' AS delta_basis FROM \"t_hr_employees\" LIMIT 1",
+      "config": {},
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "w": 4,
+        "h": 6
+      }
+    },
+    {
+      "id": "VEoMouXo",
+      "type": "area",
+      "title": "Bonus Amount Volume Over Hire Date",
+      "description": "Total bonus amount aggregated by month of hire date to show bonus distribution over time.",
+      "dataKey": "SELECT CAST(date_trunc('month', \"hire_date\") AS VARCHAR) AS x, CAST(SUM(\"bonus_amount\") AS DOUBLE) AS value FROM \"t_hr_employees\" GROUP BY x ORDER BY x ASC LIMIT 500",
+      "config": {},
+      "layout": {
+        "x": 5,
+        "y": 24,
+        "w": 7,
+        "h": 9
+      }
+    },
+    {
+      "id": "L5slqMDu",
+      "type": "scatter",
+      "title": "Base Salary vs Bonus Amount Correlation",
+      "description": "Scatter plot showing the correlation between employees' base salary and their bonus amount.",
+      "dataKey": "SELECT \"job_title\" AS \"col1\", CAST(\"base_salary\" AS DOUBLE) AS \"x\", CAST(\"bonus_amount\" AS DOUBLE) AS \"y\" FROM \"t_hr_employees\" WHERE \"base_salary\" IS NOT NULL AND \"bonus_amount\" IS NOT NULL LIMIT 1000",
+      "config": {
+        "xAxisLabel": "Base Salary",
+        "yAxisLabel": "Bonus Amount"
+      },
+      "layout": {
+        "x": 4,
+        "y": 8,
+        "w": 8,
+        "h": 8
+      }
+    },
+    {
+      "id": "FqQy3xAO",
+      "type": "horizontal-bar",
+      "title": "First Name Ranked by Bonus Amount",
+      "description": "Sum of bonus amounts grouped by employee first name, showing top 25 first names with highest total bonus.",
+      "dataKey": "SELECT \"first_name\" AS label, CAST(SUM(\"bonus_amount\") AS DOUBLE) AS value FROM \"t_hr_employees\" GROUP BY \"first_name\" ORDER BY value DESC LIMIT 25",
+      "config": {},
+      "layout": {
+        "x": 0,
+        "y": 22,
+        "w": 5,
+        "h": 25
+      }
+    },
+    {
+      "id": "Q82h1NAL",
+      "type": "treemap",
+      "title": "Total Comp Proportion by First Name",
+      "description": "Shows the proportion of total compensation aggregated by employee first name.",
+      "dataKey": "SELECT \"first_name\" AS label, CAST(SUM(\"total_comp\") AS DOUBLE) AS value FROM \"t_hr_employees\" GROUP BY \"first_name\" ORDER BY value DESC LIMIT 30",
+      "config": {},
+      "layout": {
+        "x": 5,
+        "y": 16,
+        "w": 7,
+        "h": 8
+      }
+    },
+    {
+      "id": "HYDVSBjo",
+      "type": "radar",
+      "title": "Multi-Metric Profile by First Name",
+      "description": "Comparison of average tenure, base salary, bonus amount, equity grant, total compensation, performance rating, and promotion count grouped by first name.",
+      "dataKey": "SELECT \"first_name\" AS axis, CAST(AVG(\"tenure_years\") AS DOUBLE) AS \"value\" FROM \"t_hr_employees\" GROUP BY \"first_name\" ORDER BY \"value\" DESC LIMIT 12",
+      "config": {},
+      "layout": {
+        "x": 0,
+        "y": 14,
+        "w": 4,
+        "h": 8
+      }
+    }
+  ],
+  "createdAt": "2026-04-25T10:18:02.877Z"
+}

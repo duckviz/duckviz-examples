@@ -10,7 +10,8 @@ import { customFetch } from "@/lib/duckviz-fetch";
 
 export default function HomePage() {
   const router = useRouter();
-  const { dashboards, createDashboard, addWidget } = useDashboardCrud("all");
+  const { dashboards, createDashboard, addWidget, saveDashboardWithWidgets } =
+    useDashboardCrud("all");
 
   const datasets = useMemo<DuckvizDataset[]>(
     () =>
@@ -40,6 +41,7 @@ export default function HomePage() {
         dashboards={dashboards}
         onCreateDashboard={createDashboard}
         onAddWidgetToDashboard={addWidget}
+        onSaveDashboardWithWidgets={saveDashboardWithWidgets}
         onNavigateToDashboard={handleNavigate}
         authenticated
         customFetch={customFetch}

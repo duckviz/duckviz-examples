@@ -1,0 +1,137 @@
+{
+  "id": "o6bXqt-pIE",
+  "name": "Logistics Shipments Dashboard",
+  "datasetSlug": "logistics-shipments",
+  "widgets": [
+    {
+      "id": "M2yUJEDC",
+      "type": "line",
+      "title": "Weight Kg Over Tender Date",
+      "description": "Trend of total weight in kilograms aggregated by month of tender date.",
+      "dataKey": "SELECT CAST(date_trunc('month', \"tender_date\") AS VARCHAR) AS x, CAST(SUM(\"weight_kg\") AS DOUBLE) AS value FROM \"t_logistics_shipments\" GROUP BY x ORDER BY x ASC LIMIT 500",
+      "config": {},
+      "layout": {
+        "x": 0,
+        "y": 19,
+        "w": 6,
+        "h": 9
+      }
+    },
+    {
+      "id": "WMkCa3Rz",
+      "type": "bar",
+      "title": "Weight Kg by Carrier Name",
+      "description": "Total shipment weight in kilograms grouped by carrier name.",
+      "dataKey": "SELECT \"carrier_name\" AS label, CAST(SUM(\"weight_kg\") AS DOUBLE) AS value FROM \"t_logistics_shipments\" GROUP BY \"carrier_name\" ORDER BY value DESC LIMIT 25",
+      "config": {},
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "w": 7,
+        "h": 9
+      }
+    },
+    {
+      "id": "2xh61wuN",
+      "type": "donut",
+      "title": "Weight Kg Distribution by Service Level",
+      "description": "Proportion of total shipment weight in kilograms grouped by service level.",
+      "dataKey": "SELECT \"service_level\" AS label, CAST(SUM(\"weight_kg\") AS DOUBLE) AS value FROM \"t_logistics_shipments\" GROUP BY \"service_level\" ORDER BY value DESC LIMIT 8",
+      "config": {},
+      "layout": {
+        "x": 7,
+        "y": 0,
+        "w": 5,
+        "h": 9
+      }
+    },
+    {
+      "id": "_cFaFNfY",
+      "type": "heatmap",
+      "title": "Carrier Name × Service Level Heatmap",
+      "description": "Heatmap showing the count of shipments by carrier name and service level.",
+      "dataKey": "SELECT \"carrier_name\" AS row, \"service_level\" AS col, CAST(COUNT(*) AS DOUBLE) AS value FROM \"t_logistics_shipments\" GROUP BY \"carrier_name\", \"service_level\" ORDER BY value DESC LIMIT 400",
+      "config": {},
+      "layout": {
+        "x": 0,
+        "y": 9,
+        "w": 8,
+        "h": 10
+      }
+    },
+    {
+      "id": "3cxVnbtz",
+      "type": "stacked-bar",
+      "title": "Carrier Name Composition by Service Level",
+      "description": "Stacked bar chart showing the count of shipments per carrier name, broken down by service level.",
+      "dataKey": "SELECT \"carrier_name\" AS label, \"service_level\" AS \"group\", CAST(COUNT(*) AS DOUBLE) AS value FROM \"t_logistics_shipments\" GROUP BY label, \"group\" ORDER BY value DESC LIMIT 25",
+      "config": {},
+      "layout": {
+        "x": 6,
+        "y": 19,
+        "w": 6,
+        "h": 9
+      }
+    },
+    {
+      "id": "5ETmz2h0",
+      "type": "horizontal-bar",
+      "title": "Carrier Name Ranked by Weight Lb",
+      "description": "Total shipment weight in pounds aggregated by carrier name, ranked descending.",
+      "dataKey": "SELECT \"carrier_name\" AS label, CAST(SUM(\"weight_lb\") AS DOUBLE) AS value FROM \"t_logistics_shipments\" GROUP BY \"carrier_name\" ORDER BY value DESC LIMIT 25",
+      "config": {},
+      "layout": {
+        "x": 8,
+        "y": 9,
+        "w": 4,
+        "h": 10
+      }
+    },
+    {
+      "id": "maXn8Umi",
+      "type": "dumbbell",
+      "title": "Weight Kg vs Weight Lb by Carrier Name",
+      "description": "Compare total shipment weight in kilograms and pounds grouped by carrier name.",
+      "dataKey": "SELECT \"carrier_name\" AS label, CAST(SUM(\"weight_kg\") AS DOUBLE) AS value1, CAST(SUM(\"weight_lb\") AS DOUBLE) AS value2 FROM \"t_logistics_shipments\" GROUP BY \"carrier_name\" ORDER BY (value1 + value2) DESC LIMIT 20",
+      "config": {
+        "value1Label": "Weight Kg",
+        "value2Label": "Weight Lb"
+      },
+      "layout": {
+        "x": 0,
+        "y": 28,
+        "w": 12,
+        "h": 9
+      }
+    },
+    {
+      "id": "f1LfHlTU",
+      "type": "treemap",
+      "title": "Freight Cost Proportion by Carrier Name",
+      "description": "Shows the proportion of total freight cost contributed by each carrier name.",
+      "dataKey": "SELECT \"carrier_name\" AS label, CAST(SUM(\"freight_cost\") AS DOUBLE) AS value FROM \"t_logistics_shipments\" GROUP BY \"carrier_name\" ORDER BY value DESC LIMIT 30",
+      "config": {},
+      "layout": {
+        "x": 0,
+        "y": 37,
+        "w": 12,
+        "h": 10
+      }
+    },
+    {
+      "id": "QZE4sTe8",
+      "type": "stacked-area",
+      "title": "Carrier Name Composition Over Tender Date",
+      "description": "Stacked area chart showing the count of shipments over time by carrier name, aggregated by month of tender_date.",
+      "dataKey": "SELECT date_trunc('month', \"tender_date\")::VARCHAR AS x, \"carrier_name\" AS series, CAST(COUNT(*) AS DOUBLE) AS value FROM \"t_logistics_shipments\" GROUP BY x, series ORDER BY x ASC, series ASC",
+      "config": {},
+      "layout": {
+        "x": 0,
+        "y": 47,
+        "w": 12,
+        "h": 9
+      }
+    }
+  ],
+  "createdAt": "2026-04-25T11:58:16.835Z"
+}
