@@ -1,0 +1,78 @@
+{
+  "id": "02-weather-observations",
+  "name": "Weather Observations Dashboard",
+  "datasetSlug": "weather-observations",
+  "widgets": [
+    {
+      "id": "lgoH4O3W",
+      "type": "geo-map",
+      "title": "Geographic Distribution by Latitude",
+      "description": "Bubble map showing count of weather observations aggregated by latitude and longitude with station city labels.",
+      "dataKey": "SELECT \"latitude\" AS lat, \"longitude\" AS lon, \"station_city\" AS label, CAST(COUNT(*) AS DOUBLE) AS value FROM \"t_weather_observations\" GROUP BY lat, lon, label ORDER BY value DESC LIMIT 500",
+      "config": {},
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "w": 12,
+        "h": 12
+      }
+    },
+    {
+      "id": "flq1Y8du",
+      "type": "heatmap",
+      "title": "Station City × Condition Label Heatmap",
+      "description": "Heatmap showing the count of weather observations by station city and condition label.",
+      "dataKey": "SELECT \"station_city\" AS row, \"condition_label\" AS col, CAST(COUNT(*) AS DOUBLE) AS value FROM \"t_weather_observations\" GROUP BY \"station_city\", \"condition_label\" ORDER BY value DESC LIMIT 400",
+      "config": {},
+      "layout": {
+        "x": 0,
+        "y": 12,
+        "w": 12,
+        "h": 10
+      }
+    },
+    {
+      "id": "iRXgE6L6",
+      "type": "stacked-bar",
+      "title": "Station City Composition by Condition Label",
+      "description": "Shows the count composition of weather observations by condition label for each station city.",
+      "dataKey": "SELECT \"station_city\" AS label, \"condition_label\" AS \"group\", CAST(COUNT(*) AS DOUBLE) AS value FROM \"t_weather_observations\" GROUP BY label, \"group\" ORDER BY value DESC LIMIT 25",
+      "config": {},
+      "layout": {
+        "x": 0,
+        "y": 22,
+        "w": 8,
+        "h": 9
+      }
+    },
+    {
+      "id": "gtsjGlvD",
+      "type": "radar",
+      "title": "Multi-Metric Profile by Station City",
+      "description": "Average temperature, humidity, wind speed, and precipitation metrics grouped by station city.",
+      "dataKey": "SELECT \"station_city\" AS \"axis\", CAST(AVG(\"temp_c\") AS DOUBLE) AS \"value\" FROM \"t_weather_observations\" GROUP BY \"station_city\" ORDER BY \"value\" DESC LIMIT 12",
+      "config": {},
+      "layout": {
+        "x": 8,
+        "y": 22,
+        "w": 4,
+        "h": 9
+      }
+    },
+    {
+      "id": "YWKvYwH8",
+      "type": "stacked-area",
+      "title": "Station City Composition Over Observation Date",
+      "description": "Stacked area chart showing the count of weather observations per station city over time by month.",
+      "dataKey": "SELECT CAST(date_trunc('month', \"observation_date\") AS VARCHAR) AS x, \"station_city\" AS series, CAST(COUNT(*) AS DOUBLE) AS value FROM \"t_weather_observations\" GROUP BY x, series ORDER BY x ASC, series ASC LIMIT 500",
+      "config": {},
+      "layout": {
+        "x": 0,
+        "y": 31,
+        "w": 12,
+        "h": 8
+      }
+    }
+  ],
+  "createdAt": "2026-04-25T13:44:43.379Z"
+}

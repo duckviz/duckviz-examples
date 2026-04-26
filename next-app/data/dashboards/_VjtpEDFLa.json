@@ -1,0 +1,140 @@
+{
+  "id": "_VjtpEDFLa",
+  "name": "Manufacturing Defects Dashboard",
+  "datasetSlug": "manufacturing-defects",
+  "widgets": [
+    {
+      "id": "anyxuS9i",
+      "type": "donut",
+      "title": "Batch Size Distribution by Production Line Name",
+      "description": "Shows the proportion of total batch sizes grouped by production line name.",
+      "dataKey": "SELECT \"production_line_name\" AS label, CAST(SUM(\"batch_size\") AS DOUBLE) AS value FROM \"t_manufacturing_defects\" GROUP BY \"production_line_name\" ORDER BY value DESC LIMIT 8",
+      "config": {},
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "w": 4,
+        "h": 10
+      }
+    },
+    {
+      "id": "1xnQbcIT",
+      "type": "heatmap",
+      "title": "Product Family × Production Line Name Heatmap",
+      "description": "Heatmap showing average defect rate (ppm) by product family and production line name.",
+      "dataKey": "SELECT \"product_family\" AS row, \"production_line_name\" AS col, CAST(AVG(try_cast(\"defect_rate_ppm\" AS DOUBLE)) AS DOUBLE) AS value FROM \"t_manufacturing_defects\" GROUP BY \"product_family\", \"production_line_name\" ORDER BY value DESC LIMIT 400",
+      "config": {},
+      "layout": {
+        "x": 4,
+        "y": 0,
+        "w": 8,
+        "h": 10
+      }
+    },
+    {
+      "id": "_TygggdF",
+      "type": "scatter",
+      "title": "Batch Size vs Measurement Value Correlation",
+      "description": "Scatter plot showing correlation between batch size and measurement value for manufacturing defects.",
+      "dataKey": "SELECT \"lot_number\" AS \"col1\", CAST(\"batch_size\" AS DOUBLE) AS \"x\", \"measurement_value\" AS \"y\" FROM \"t_manufacturing_defects\" WHERE \"batch_size\" IS NOT NULL AND \"measurement_value\" IS NOT NULL LIMIT 1000",
+      "config": {
+        "xAxisLabel": "Batch Size",
+        "yAxisLabel": "Measurement Value"
+      },
+      "layout": {
+        "x": 4,
+        "y": 10,
+        "w": 5,
+        "h": 9
+      }
+    },
+    {
+      "id": "JXMEKbnF",
+      "type": "dumbbell",
+      "title": "Batch Size vs Measurement Value by Product Family",
+      "description": "Compare average batch size and average measurement value for each product family.",
+      "dataKey": "SELECT \"product_family\" AS label, CAST(AVG(\"batch_size\") AS DOUBLE) AS value1, AVG(\"measurement_value\") AS value2 FROM \"t_manufacturing_defects\" GROUP BY \"product_family\" ORDER BY (value1 + value2) DESC LIMIT 20",
+      "config": {
+        "value1Label": "Batch Size",
+        "value2Label": "Measurement Value"
+      },
+      "layout": {
+        "x": 0,
+        "y": 10,
+        "w": 4,
+        "h": 9
+      }
+    },
+    {
+      "id": "2sU_URRP",
+      "type": "stacked-bar",
+      "title": "Product Family Composition by Production Line Name",
+      "description": "Stacked bar chart showing the distribution of defects found per product family across different production line names.",
+      "dataKey": "SELECT \"product_family\" AS label, \"production_line_name\" AS \"group\", CAST(SUM(\"defects_found\") AS DOUBLE) AS value FROM \"t_manufacturing_defects\" GROUP BY label, \"group\" ORDER BY value DESC LIMIT 25",
+      "config": {},
+      "layout": {
+        "x": 0,
+        "y": 19,
+        "w": 6,
+        "h": 9
+      }
+    },
+    {
+      "id": "n3we4Inw",
+      "type": "treemap",
+      "title": "Total Cost Usd Proportion by Product Family",
+      "description": "Treemap showing the proportion of total manufacturing defect costs in USD by product family.",
+      "dataKey": "SELECT \"product_family\" AS label, CAST(SUM(\"total_cost_usd\") AS DOUBLE) AS value FROM \"t_manufacturing_defects\" GROUP BY \"product_family\" ORDER BY value DESC LIMIT 20",
+      "config": {},
+      "layout": {
+        "x": 0,
+        "y": 28,
+        "w": 12,
+        "h": 11
+      }
+    },
+    {
+      "id": "WYVHbKDB",
+      "type": "horizontal-bar",
+      "title": "Product Family Ranked by Measurement Value",
+      "description": "Average measurement value per product family, ranked descending.",
+      "dataKey": "SELECT \"product_family\" AS label, AVG(\"measurement_value\") AS value FROM \"t_manufacturing_defects\" GROUP BY \"product_family\" ORDER BY value DESC LIMIT 25",
+      "config": {},
+      "layout": {
+        "x": 6,
+        "y": 19,
+        "w": 6,
+        "h": 9
+      }
+    },
+    {
+      "id": "Hymvz1Ok",
+      "type": "radar",
+      "title": "Multi-Metric Profile by Product Family",
+      "description": "Comparison of average defect rate (ppm), average yield percentage, average first pass yield percentage, and average total cost (USD) across product families.",
+      "dataKey": "SELECT \"product_family\" AS axis, CAST(AVG(\"defect_rate_ppm\") AS DOUBLE) AS \"value\" FROM \"t_manufacturing_defects\" GROUP BY \"product_family\" ORDER BY \"value\" DESC LIMIT 12",
+      "config": {},
+      "layout": {
+        "x": 9,
+        "y": 10,
+        "w": 3,
+        "h": 9
+      }
+    },
+    {
+      "id": "jcDg11Mk",
+      "type": "table",
+      "title": "Data Overview Table",
+      "description": "Overview of manufacturing defects with key metrics and classifications.",
+      "dataKey": "SELECT \"lot_number\", \"part_number\", \"serial_number\", \"product_family\", \"production_line_name\", \"workstation\", \"shift\", \"detected_at\", CAST(\"batch_size\" AS DOUBLE) AS \"batch_size\", CAST(\"defects_found\" AS DOUBLE) AS \"defects_found\", CAST(\"defect_rate_ppm\" AS DOUBLE) AS \"defect_rate_ppm\", \"yield_pct\", \"first_pass_yield_pct\", \"defect_code\", \"defect_category\", \"defect_severity\", \"root_cause\", \"root_cause_category\", \"detection_method\", \"measurement_value\", \"spec_min\", \"spec_max\", \"cp\", \"cpk\", \"rework_cost_usd\", \"scrap_cost_usd\", \"total_cost_usd\", \"disposition\", CAST(\"resolution_hours\" AS DOUBLE) AS \"resolution_hours\", \"resolved\", \"supplier_code\", \"iso_9001_nonconformance\" FROM \"t_manufacturing_defects\" LIMIT 20",
+      "config": {},
+      "layout": {
+        "x": 0,
+        "y": 39,
+        "w": 12,
+        "h": 10
+      }
+    }
+  ],
+  "createdAt": "2026-04-26T12:27:42.130Z"
+}

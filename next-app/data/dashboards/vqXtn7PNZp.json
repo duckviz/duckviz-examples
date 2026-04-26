@@ -1,0 +1,210 @@
+{
+  "id": "vqXtn7PNZp",
+  "name": "Airline Flights Dashboard",
+  "datasetSlug": "airline-flights",
+  "widgets": [
+    {
+      "id": "W-FmetlP",
+      "type": "bar",
+      "title": "Avg Fare Usd by Carrier Name",
+      "description": "Average fare in USD grouped by each carrier name",
+      "dataKey": "SELECT \"carrier_name\" AS label, AVG(\"avg_fare_usd\") AS value FROM \"t_airline_flights\" GROUP BY \"carrier_name\" ORDER BY value DESC LIMIT 25",
+      "config": {},
+      "layout": {
+        "x": 4,
+        "y": 0,
+        "w": 8,
+        "h": 9
+      }
+    },
+    {
+      "id": "x40FSMzO",
+      "type": "big-number",
+      "title": "Total Avg Fare Usd",
+      "description": "Average fare in USD across all flights",
+      "dataKey": "SELECT 'Average Fare USD' AS label, CAST(AVG(\"avg_fare_usd\") AS DOUBLE) AS value, 0.0 AS delta, 'positive' AS sentiment, 'overall' AS delta_basis FROM \"t_airline_flights\" LIMIT 1",
+      "config": {},
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "w": 4,
+        "h": 9
+      }
+    },
+    {
+      "id": "svgv8-IA",
+      "type": "multi-line",
+      "title": "Distance Mi by Carrier Name Over Flight Date",
+      "description": "Monthly total distance flown in miles grouped by carrier name over flight dates.",
+      "dataKey": "SELECT CAST(date_trunc('month', \"flight_date\") AS VARCHAR) AS x, \"carrier_name\" AS series, CAST(SUM(\"distance_mi\") AS DOUBLE) AS value FROM \"t_airline_flights\" GROUP BY x, series ORDER BY x ASC, series ASC",
+      "config": {},
+      "layout": {
+        "x": 0,
+        "y": 9,
+        "w": 6,
+        "h": 9
+      }
+    },
+    {
+      "id": "7vhFeCCb",
+      "type": "histogram",
+      "title": "Distance Mi Frequency Distribution",
+      "description": "Histogram showing the frequency distribution of flight distances in miles.",
+      "dataKey": "SELECT CAST(FLOOR(\"distance_mi\" / 100) * 100 AS VARCHAR) || '-' || CAST(FLOOR(\"distance_mi\" / 100) * 100 + 99 AS VARCHAR) AS bucket, CAST(COUNT(*) AS DOUBLE) AS count FROM \"t_airline_flights\" WHERE \"distance_mi\" IS NOT NULL GROUP BY bucket ORDER BY CAST(SPLIT_PART(bucket, '-', 1) AS INTEGER) ASC",
+      "config": {},
+      "layout": {
+        "x": 6,
+        "y": 9,
+        "w": 6,
+        "h": 9
+      }
+    },
+    {
+      "id": "h4U_v1sR",
+      "type": "line",
+      "title": "Avg Fare Usd Over Flight Date",
+      "description": "Average fare in USD aggregated by month over the flight dates.",
+      "dataKey": "SELECT CAST(date_trunc('month', \"flight_date\") AS VARCHAR) AS x, AVG(\"avg_fare_usd\") AS value FROM \"t_airline_flights\" GROUP BY x ORDER BY x ASC",
+      "config": {},
+      "layout": {
+        "x": 0,
+        "y": 18,
+        "w": 7,
+        "h": 9
+      }
+    },
+    {
+      "id": "piQKSv8D",
+      "type": "donut",
+      "title": "Avg Fare Usd Distribution by Aircraft Type",
+      "description": "Shows the average fare in USD grouped by aircraft type for all flights.",
+      "dataKey": "SELECT \"aircraft_type\" AS label, AVG(\"avg_fare_usd\") AS value FROM \"t_airline_flights\" GROUP BY \"aircraft_type\" ORDER BY value DESC LIMIT 8",
+      "config": {},
+      "layout": {
+        "x": 7,
+        "y": 18,
+        "w": 5,
+        "h": 9
+      }
+    },
+    {
+      "id": "0ltA5jvh",
+      "type": "heatmap",
+      "title": "Carrier Name × Aircraft Type Heatmap",
+      "description": "Heatmap showing the count of flights by carrier name and aircraft type.",
+      "dataKey": "SELECT \"carrier_name\" AS row, \"aircraft_type\" AS col, CAST(COUNT(*) AS DOUBLE) AS value FROM \"t_airline_flights\" GROUP BY \"carrier_name\", \"aircraft_type\" ORDER BY value DESC LIMIT 400",
+      "config": {},
+      "layout": {
+        "x": 0,
+        "y": 27,
+        "w": 12,
+        "h": 10
+      }
+    },
+    {
+      "id": "uL6nNVR4",
+      "type": "scatter",
+      "title": "Avg Fare Usd vs Distance Mi Correlation",
+      "description": "Scatter plot showing the correlation between average fare in USD and flight distance in miles.",
+      "dataKey": "SELECT CAST(\"distance_mi\" AS DOUBLE) AS x, CAST(AVG(\"avg_fare_usd\") AS DOUBLE) AS y FROM \"t_airline_flights\" WHERE \"distance_mi\" IS NOT NULL AND \"avg_fare_usd\" IS NOT NULL GROUP BY \"distance_mi\" ORDER BY x ASC LIMIT 1000",
+      "config": {
+        "xAxisLabel": "Distance Mi",
+        "yAxisLabel": "Avg Fare Usd"
+      },
+      "layout": {
+        "x": 0,
+        "y": 37,
+        "w": 6,
+        "h": 9
+      }
+    },
+    {
+      "id": "ffxpzlVj",
+      "type": "stacked-bar",
+      "title": "Carrier Name Composition by Aircraft Type",
+      "description": "Stacked bar chart showing the count of flights per carrier name grouped by aircraft type.",
+      "dataKey": "SELECT \"carrier_name\" AS label, \"aircraft_type\" AS \"group\", CAST(COUNT(*) AS DOUBLE) AS value FROM \"t_airline_flights\" GROUP BY label, \"group\" ORDER BY value DESC LIMIT 25",
+      "config": {},
+      "layout": {
+        "x": 6,
+        "y": 37,
+        "w": 6,
+        "h": 9
+      }
+    },
+    {
+      "id": "zTC2K5pe",
+      "type": "area",
+      "title": "Distance Mi Volume Over Flight Date",
+      "description": "Total distance in miles flown aggregated by month over flight dates.",
+      "dataKey": "SELECT CAST(date_trunc('month', \"flight_date\") AS VARCHAR) AS x, CAST(SUM(\"distance_mi\") AS DOUBLE) AS value FROM \"t_airline_flights\" GROUP BY date_trunc('month', \"flight_date\") ORDER BY x ASC",
+      "config": {},
+      "layout": {
+        "x": 0,
+        "y": 46,
+        "w": 6,
+        "h": 9
+      }
+    },
+    {
+      "id": "FXQD5lL6",
+      "type": "horizontal-bar",
+      "title": "Carrier Name Ranked by Distance Mi",
+      "description": "Total distance flown by each carrier, ranked descending",
+      "dataKey": "SELECT \"carrier_name\" AS label, CAST(SUM(\"distance_mi\") AS DOUBLE) AS value FROM \"t_airline_flights\" GROUP BY \"carrier_name\" ORDER BY value DESC LIMIT 25",
+      "config": {},
+      "layout": {
+        "x": 6,
+        "y": 46,
+        "w": 6,
+        "h": 9
+      }
+    },
+    {
+      "id": "LqWGuRT6",
+      "type": "dumbbell",
+      "title": "Avg Fare Usd vs Distance Mi by Carrier Name",
+      "description": "Comparison of average fare in USD and average flight distance in miles for each carrier.",
+      "dataKey": "SELECT \"carrier_name\" AS label, AVG(\"avg_fare_usd\") AS value1, AVG(CAST(\"distance_mi\" AS DOUBLE)) AS value2 FROM \"t_airline_flights\" GROUP BY \"carrier_name\" ORDER BY (value1 + value2) DESC LIMIT 20",
+      "config": {
+        "value1Label": "Avg Fare Usd",
+        "value2Label": "Distance Mi"
+      },
+      "layout": {
+        "x": 0,
+        "y": 55,
+        "w": 6,
+        "h": 9
+      }
+    },
+    {
+      "id": "LqNGWzcV",
+      "type": "stacked-area",
+      "title": "Carrier Name Composition Over Flight Date",
+      "description": "Stacked area chart showing the count of flights per carrier over time by month.",
+      "dataKey": "SELECT CAST(date_trunc('month', \"flight_date\") AS VARCHAR) AS x, \"carrier_name\" AS series, CAST(COUNT(*) AS DOUBLE) AS value FROM \"t_airline_flights\" GROUP BY x, series ORDER BY x ASC, series ASC",
+      "config": {},
+      "layout": {
+        "x": 6,
+        "y": 55,
+        "w": 6,
+        "h": 9
+      }
+    },
+    {
+      "id": "Ycne67LQ",
+      "type": "treemap",
+      "title": "Scheduled Block Min Proportion by Carrier Name",
+      "description": "Proportion of total scheduled block minutes aggregated by carrier name.",
+      "dataKey": "SELECT \"carrier_name\" AS label, CAST(SUM(\"scheduled_block_min\") AS DOUBLE) AS value FROM \"t_airline_flights\" GROUP BY \"carrier_name\" ORDER BY value DESC LIMIT 30",
+      "config": {},
+      "layout": {
+        "x": 0,
+        "y": 64,
+        "w": 12,
+        "h": 10
+      }
+    }
+  ],
+  "createdAt": "2026-04-26T12:30:12.131Z"
+}

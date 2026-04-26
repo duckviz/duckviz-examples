@@ -1,0 +1,182 @@
+{
+  "id": "AIpcub1Ocg",
+  "name": "Banking Transactions Dashboard",
+  "datasetSlug": "banking-transactions",
+  "widgets": [
+    {
+      "id": "0Y7YV6k3",
+      "type": "bar",
+      "title": "Amount by Txn Type",
+      "description": "Total transaction amount aggregated by transaction type.",
+      "dataKey": "SELECT \"txn_type\" AS label, CAST(SUM(\"amount\") AS DOUBLE) AS value FROM \"t_banking_transactions\" GROUP BY \"txn_type\" ORDER BY value DESC LIMIT 25",
+      "config": {},
+      "layout": {
+        "x": 5,
+        "y": 0,
+        "w": 7,
+        "h": 9
+      }
+    },
+    {
+      "id": "nX9_u3vg",
+      "type": "donut",
+      "title": "Amount Distribution by Channel",
+      "description": "Proportion of total transaction amounts grouped by channel",
+      "dataKey": "SELECT \"channel\" AS label, CAST(SUM(\"amount\") AS DOUBLE) AS value FROM \"t_banking_transactions\" GROUP BY \"channel\" ORDER BY value DESC LIMIT 8",
+      "config": {},
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "w": 5,
+        "h": 9
+      }
+    },
+    {
+      "id": "kt671DvT",
+      "type": "line",
+      "title": "Amount Over Posted Date",
+      "description": "Daily total transaction amount aggregated over posted_date.",
+      "dataKey": "SELECT CAST(date_trunc('day', \"posted_date\") AS VARCHAR) AS x, CAST(SUM(\"amount\") AS DOUBLE) AS value FROM \"t_banking_transactions\" GROUP BY x ORDER BY x ASC",
+      "config": {},
+      "layout": {
+        "x": 6,
+        "y": 9,
+        "w": 6,
+        "h": 9
+      }
+    },
+    {
+      "id": "_zJO65Vl",
+      "type": "histogram",
+      "title": "Running Balance Frequency Distribution",
+      "description": "Frequency distribution of running balance values grouped into buckets of 1000 units.",
+      "dataKey": "SELECT CAST(FLOOR(\"running_balance\" / 1000) * 1000 AS VARCHAR) || ' - ' || CAST(FLOOR(\"running_balance\" / 1000) * 1000 + 999 AS VARCHAR) AS bucket, CAST(COUNT(*) AS DOUBLE) AS count FROM \"t_banking_transactions\" GROUP BY bucket ORDER BY CAST(SPLIT_PART(bucket, ' - ', 1) AS DOUBLE) ASC LIMIT 100",
+      "config": {},
+      "layout": {
+        "x": 0,
+        "y": 9,
+        "w": 6,
+        "h": 9
+      }
+    },
+    {
+      "id": "_ftD2BnV",
+      "type": "heatmap",
+      "title": "Txn Type × Channel Heatmap",
+      "description": "Heatmap showing the total transaction amount aggregated by transaction type and channel.",
+      "dataKey": "SELECT \"txn_type\" AS row, \"channel\" AS col, CAST(SUM(\"amount\") AS DOUBLE) AS value FROM \"t_banking_transactions\" GROUP BY \"txn_type\", \"channel\" ORDER BY value DESC LIMIT 400",
+      "config": {},
+      "layout": {
+        "x": 0,
+        "y": 18,
+        "w": 12,
+        "h": 10
+      }
+    },
+    {
+      "id": "WGIFVopL",
+      "type": "scatter",
+      "title": "Amount vs Running Balance Correlation",
+      "description": "Scatter plot showing the correlation between transaction amount and running balance for banking transactions.",
+      "dataKey": "SELECT CAST(\"amount\" AS DOUBLE) AS x, CAST(\"running_balance\" AS DOUBLE) AS y FROM \"t_banking_transactions\" WHERE \"amount\" IS NOT NULL AND \"running_balance\" IS NOT NULL LIMIT 1000",
+      "config": {
+        "xAxisLabel": "Amount",
+        "yAxisLabel": "Running Balance"
+      },
+      "layout": {
+        "x": 0,
+        "y": 28,
+        "w": 6,
+        "h": 9
+      }
+    },
+    {
+      "id": "-ttzwLwE",
+      "type": "area",
+      "title": "Running Balance Volume Over Posted Date",
+      "description": "Daily average running balance aggregated over posted_date.",
+      "dataKey": "SELECT CAST(date_trunc('day', \"posted_date\") AS VARCHAR) AS x, AVG(\"running_balance\") AS value FROM \"t_banking_transactions\" GROUP BY x ORDER BY x ASC LIMIT 500",
+      "config": {},
+      "layout": {
+        "x": 6,
+        "y": 28,
+        "w": 6,
+        "h": 9
+      }
+    },
+    {
+      "id": "oTR5oQx8",
+      "type": "horizontal-bar",
+      "title": "Txn Type Ranked by Running Balance",
+      "description": "Sum of running balances grouped by transaction type, ranked descending",
+      "dataKey": "SELECT \"txn_type\" AS label, CAST(SUM(\"running_balance\") AS DOUBLE) AS value FROM \"t_banking_transactions\" GROUP BY \"txn_type\" ORDER BY value DESC LIMIT 25",
+      "config": {},
+      "layout": {
+        "x": 0,
+        "y": 37,
+        "w": 6,
+        "h": 9
+      }
+    },
+    {
+      "id": "6yBGtQEi",
+      "type": "stacked-bar",
+      "title": "Txn Type Composition by Channel",
+      "description": "Stacked bar chart showing the sum of transaction amounts by transaction type within each channel.",
+      "dataKey": "SELECT \"channel\" AS label, \"txn_type\" AS \"group\", CAST(SUM(\"amount\") AS DOUBLE) AS value FROM \"t_banking_transactions\" GROUP BY label, \"group\" ORDER BY value DESC LIMIT 25",
+      "config": {},
+      "layout": {
+        "x": 6,
+        "y": 37,
+        "w": 6,
+        "h": 9
+      }
+    },
+    {
+      "id": "uV4WQuYD",
+      "type": "dumbbell",
+      "title": "Amount vs Running Balance by Txn Type",
+      "description": "Comparison of total transaction amount and average running balance grouped by transaction type.",
+      "dataKey": "SELECT \"txn_type\" AS label, CAST(SUM(\"amount\") AS DOUBLE) AS value1, CAST(AVG(\"running_balance\") AS DOUBLE) AS value2 FROM \"t_banking_transactions\" GROUP BY \"txn_type\" ORDER BY (value1 + value2) DESC LIMIT 20",
+      "config": {
+        "value1Label": "Amount",
+        "value2Label": "Running Balance"
+      },
+      "layout": {
+        "x": 0,
+        "y": 46,
+        "w": 6,
+        "h": 9
+      }
+    },
+    {
+      "id": "5kCfjuGm",
+      "type": "stacked-area",
+      "title": "Txn Type Composition Over Posted Date",
+      "description": "Stacked area chart showing the sum of transaction amounts by transaction type over each month based on posted_date.",
+      "dataKey": "SELECT date_trunc('month', \"posted_date\")::VARCHAR AS x, \"txn_type\" AS series, CAST(SUM(\"amount\") AS DOUBLE) AS value FROM \"t_banking_transactions\" GROUP BY x, series ORDER BY x ASC, series ASC",
+      "config": {},
+      "layout": {
+        "x": 6,
+        "y": 46,
+        "w": 6,
+        "h": 9
+      }
+    },
+    {
+      "id": "Oq0oUJzo",
+      "type": "radar",
+      "title": "Multi-Metric Profile by Txn Type",
+      "description": "Comparison of average amount, fraud rate, and dispute rate across different transaction types.",
+      "dataKey": "SELECT \"txn_type\" AS axis, CAST(AVG(\"amount\") AS DOUBLE) AS value FROM \"t_banking_transactions\" GROUP BY \"txn_type\" ORDER BY value DESC LIMIT 12",
+      "config": {},
+      "layout": {
+        "x": 0,
+        "y": 55,
+        "w": 12,
+        "h": 9
+      }
+    }
+  ],
+  "createdAt": "2026-04-26T12:32:20.589Z"
+}

@@ -1,0 +1,182 @@
+{
+  "id": "iZ1uKdhcI5",
+  "name": "Social Media Posts Dashboard",
+  "datasetSlug": "social-media",
+  "widgets": [
+    {
+      "id": "Uf66pF9Y",
+      "type": "bar",
+      "title": "Hashtag Count by Platform",
+      "description": "Sum of hashtags used in posts grouped by social media platform.",
+      "dataKey": "SELECT \"platform\" AS label, CAST(SUM(\"hashtag_count\") AS DOUBLE) AS value FROM \"t_social_media\" GROUP BY \"platform\" ORDER BY value DESC LIMIT 25",
+      "config": {},
+      "layout": {
+        "x": 4,
+        "y": 0,
+        "w": 8,
+        "h": 9
+      }
+    },
+    {
+      "id": "8jAXbz9C",
+      "type": "donut",
+      "title": "Hashtag Count Distribution by Post Type",
+      "description": "Shows the total hashtag count aggregated by each post type to understand hashtag usage patterns across different post formats.",
+      "dataKey": "SELECT \"post_type\" AS label, CAST(SUM(try_cast(\"hashtag_count\" AS DOUBLE)) AS DOUBLE) AS value FROM \"t_social_media\" GROUP BY \"post_type\" ORDER BY value DESC LIMIT 8",
+      "config": {},
+      "layout": {
+        "x": 7,
+        "y": 19,
+        "w": 5,
+        "h": 9
+      }
+    },
+    {
+      "id": "ZhghiBia",
+      "type": "multi-line",
+      "title": "Mention Count by Platform Over Sentiment Label",
+      "description": "Average mention count per post grouped by platform and sentiment label.",
+      "dataKey": "SELECT \"sentiment_label\" AS x, \"platform\" AS series, CAST(AVG(try_cast(\"mention_count\" AS DOUBLE)) AS DOUBLE) AS value FROM \"t_social_media\" GROUP BY x, series ORDER BY x ASC, series ASC LIMIT 500",
+      "config": {},
+      "layout": {
+        "x": 0,
+        "y": 19,
+        "w": 7,
+        "h": 9
+      }
+    },
+    {
+      "id": "2kou4gvY",
+      "type": "big-number",
+      "title": "Total Hashtag Count",
+      "description": "Sum of all hashtags used across all social media posts.",
+      "dataKey": "SELECT 'Total Hashtag Count' AS label, CAST(SUM(\"hashtag_count\") AS DOUBLE) AS value, 0.0 AS delta, 'positive' AS sentiment, 'overall' AS delta_basis FROM \"t_social_media\" LIMIT 1",
+      "config": {},
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "w": 4,
+        "h": 9
+      }
+    },
+    {
+      "id": "yZKKd_7E",
+      "type": "scatter",
+      "title": "Hashtag Count vs Mention Count Correlation",
+      "description": "Scatter plot showing correlation between hashtag count and mention count per post.",
+      "dataKey": "SELECT \"post_id\" AS col1, CAST(\"hashtag_count\" AS DOUBLE) AS x, CAST(\"mention_count\" AS DOUBLE) AS y FROM \"t_social_media\" LIMIT 1000",
+      "config": {
+        "xAxisLabel": "Hashtag Count",
+        "yAxisLabel": "Mention Count"
+      },
+      "layout": {
+        "x": 0,
+        "y": 28,
+        "w": 12,
+        "h": 9
+      }
+    },
+    {
+      "id": "cN77dCWH",
+      "type": "heatmap",
+      "title": "Platform × Post Type Heatmap",
+      "description": "Average engagement rate percentage by platform and post type",
+      "dataKey": "SELECT \"platform\" AS row, \"post_type\" AS col, CAST(AVG(\"engagement_rate_pct\") AS DOUBLE) AS value FROM \"t_social_media\" GROUP BY \"platform\", \"post_type\" ORDER BY value DESC LIMIT 400",
+      "config": {},
+      "layout": {
+        "x": 0,
+        "y": 9,
+        "w": 12,
+        "h": 10
+      }
+    },
+    {
+      "id": "aBVPxfOI",
+      "type": "area",
+      "title": "Mention Count Volume Over Sentiment Label",
+      "description": "Total mention counts aggregated by sentiment label to visualize volume distribution across sentiment categories.",
+      "dataKey": "SELECT \"sentiment_label\" AS x, CAST(SUM(\"mention_count\") AS DOUBLE) AS value FROM \"t_social_media\" GROUP BY \"sentiment_label\" ORDER BY x ASC LIMIT 500",
+      "config": {},
+      "layout": {
+        "x": 0,
+        "y": 37,
+        "w": 6,
+        "h": 9
+      }
+    },
+    {
+      "id": "AuV9pcK7",
+      "type": "horizontal-bar",
+      "title": "Platform Ranked by Mention Count",
+      "description": "Sum of mention counts grouped by social media platform, ranked descending.",
+      "dataKey": "SELECT \"platform\" AS label, CAST(SUM(\"mention_count\") AS DOUBLE) AS value FROM \"t_social_media\" GROUP BY \"platform\" ORDER BY value DESC LIMIT 25",
+      "config": {},
+      "layout": {
+        "x": 6,
+        "y": 37,
+        "w": 6,
+        "h": 9
+      }
+    },
+    {
+      "id": "VSZD81LD",
+      "type": "stacked-bar",
+      "title": "Platform Composition by Post Type",
+      "description": "Stacked bar chart showing the count of posts per platform, broken down by post type to visualize the composition of post types on each platform.",
+      "dataKey": "SELECT \"platform\" AS label, \"post_type\" AS \"group\", CAST(COUNT(*) AS DOUBLE) AS value FROM \"t_social_media\" GROUP BY \"platform\", \"post_type\" ORDER BY value DESC LIMIT 25",
+      "config": {},
+      "layout": {
+        "x": 0,
+        "y": 46,
+        "w": 7,
+        "h": 9
+      }
+    },
+    {
+      "id": "mDbCMXbV",
+      "type": "radar",
+      "title": "Multi-Metric Profile by Platform",
+      "description": "Average key engagement metrics per social media platform to compare performance profiles.",
+      "dataKey": "SELECT \"platform\" AS axis, \n  CAST(AVG(\"engagement_rate_pct\") AS DOUBLE) AS \"value\" \nFROM \"t_social_media\" \nGROUP BY \"platform\" \nORDER BY \"value\" DESC \nLIMIT 12",
+      "config": {},
+      "layout": {
+        "x": 7,
+        "y": 46,
+        "w": 5,
+        "h": 9
+      }
+    },
+    {
+      "id": "hKnaftQK",
+      "type": "dumbbell",
+      "title": "Hashtag Count vs Mention Count by Platform",
+      "description": "Comparison of average hashtag count and mention count per post grouped by social media platform.",
+      "dataKey": "SELECT \"platform\" AS label, CAST(AVG(\"hashtag_count\") AS DOUBLE) AS value1, CAST(AVG(\"mention_count\") AS DOUBLE) AS value2 FROM \"t_social_media\" GROUP BY \"platform\" ORDER BY (value1 + value2) DESC LIMIT 20",
+      "config": {
+        "value1Label": "Hashtag Count",
+        "value2Label": "Mention Count"
+      },
+      "layout": {
+        "x": 0,
+        "y": 55,
+        "w": 12,
+        "h": 9
+      }
+    },
+    {
+      "id": "EAE9Nd4S",
+      "type": "treemap",
+      "title": "Media Count Proportion by Platform",
+      "description": "Shows the total media count aggregated by social media platform to visualize the distribution of media usage across platforms.",
+      "dataKey": "SELECT \"platform\" AS label, CAST(SUM(TRY_CAST(\"media_count\" AS DOUBLE)) AS DOUBLE) AS value FROM \"t_social_media\" GROUP BY \"platform\" ORDER BY value DESC LIMIT 30",
+      "config": {},
+      "layout": {
+        "x": 0,
+        "y": 64,
+        "w": 12,
+        "h": 10
+      }
+    }
+  ],
+  "createdAt": "2026-04-25T13:46:41.210Z"
+}

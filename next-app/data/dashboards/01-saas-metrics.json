@@ -1,0 +1,151 @@
+{
+  "id": "01-saas-metrics",
+  "name": "SaaS Metrics Dashboard",
+  "datasetSlug": "saas-metrics",
+  "widgets": [
+    {
+      "id": "FhMhmkN9",
+      "type": "country-map",
+      "title": "Health Score by Country",
+      "description": "Average health score aggregated by country for all accounts.",
+      "dataKey": "SELECT \"country\" AS country, CAST(AVG(\"health_score\") AS DOUBLE) AS value FROM \"t_saas_metrics\" GROUP BY \"country\" ORDER BY value DESC LIMIT 250",
+      "config": {},
+      "layout": {
+        "x": 0,
+        "y": 8,
+        "w": 12,
+        "h": 13
+      }
+    },
+    {
+      "id": "5hZu6_SE",
+      "type": "bar",
+      "title": "Nps Score by Country",
+      "description": "Average NPS score grouped by country for all accounts.",
+      "dataKey": "SELECT \"country\" AS label, CAST(AVG(\"nps_score\") AS DOUBLE) AS value FROM \"t_saas_metrics\" GROUP BY \"country\" ORDER BY value DESC LIMIT 25",
+      "config": {},
+      "layout": {
+        "x": 4,
+        "y": 0,
+        "w": 4,
+        "h": 8
+      }
+    },
+    {
+      "id": "ob3bPffT",
+      "type": "donut",
+      "title": "Health Score Distribution by Nps Category",
+      "description": "Average health score grouped by NPS category showing distribution proportions.",
+      "dataKey": "SELECT \"nps_category\" AS label, CAST(AVG(\"health_score\") AS DOUBLE) AS value FROM \"t_saas_metrics\" GROUP BY \"nps_category\" ORDER BY value DESC LIMIT 8",
+      "config": {},
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "w": 4,
+        "h": 8
+      }
+    },
+    {
+      "id": "VdQly3Qu",
+      "type": "line",
+      "title": "Health Score Over Signup Date",
+      "description": "Average health score trend over time based on signup month.",
+      "dataKey": "SELECT CAST(date_trunc('month', \"signup_date\") AS VARCHAR) AS x, CAST(AVG(\"health_score\") AS DOUBLE) AS value FROM \"t_saas_metrics\" GROUP BY date_trunc('month', \"signup_date\") ORDER BY x ASC LIMIT 500",
+      "config": {},
+      "layout": {
+        "x": 0,
+        "y": 21,
+        "w": 12,
+        "h": 9
+      }
+    },
+    {
+      "id": "_nDGBNEa",
+      "type": "stacked-bar",
+      "title": "Country Composition by Nps Category",
+      "description": "Stacked bar chart showing the count of accounts per country segmented by NPS category to visualize the distribution of customer satisfaction across countries.",
+      "dataKey": "SELECT \"country\" AS label, \"nps_category\" AS \"group\", CAST(COUNT(*) AS DOUBLE) AS value FROM \"t_saas_metrics\" GROUP BY label, \"group\" ORDER BY value DESC LIMIT 25",
+      "config": {},
+      "layout": {
+        "x": 0,
+        "y": 30,
+        "w": 6,
+        "h": 9
+      }
+    },
+    {
+      "id": "h7o3zQID",
+      "type": "horizontal-bar",
+      "title": "Nps Category Ranked by Nps Score",
+      "description": "Average NPS Score per NPS Category, ranked descending",
+      "dataKey": "SELECT \"nps_category\" AS label, CAST(AVG(\"nps_score\") AS DOUBLE) AS value FROM \"t_saas_metrics\" GROUP BY \"nps_category\" ORDER BY value DESC LIMIT 25",
+      "config": {},
+      "layout": {
+        "x": 6,
+        "y": 30,
+        "w": 6,
+        "h": 9
+      }
+    },
+    {
+      "id": "XqyK4-a6",
+      "type": "heatmap",
+      "title": "Country × Nps Category Heatmap",
+      "description": "Heatmap showing the average NPS score by country and NPS category.",
+      "dataKey": "SELECT \"country\" AS row, \"nps_category\" AS col, CAST(AVG(\"nps_score\") AS DOUBLE) AS value FROM \"t_saas_metrics\" WHERE \"nps_category\" IS NOT NULL AND \"country\" IS NOT NULL GROUP BY row, col ORDER BY value DESC LIMIT 400",
+      "config": {},
+      "layout": {
+        "x": 0,
+        "y": 39,
+        "w": 12,
+        "h": 10
+      }
+    },
+    {
+      "id": "LAsqOxUf",
+      "type": "area",
+      "title": "Nps Score Volume Over Signup Date",
+      "description": "Shows the total NPS score aggregated by month of signup date to visualize volume trends over time.",
+      "dataKey": "SELECT CAST(date_trunc('month', \"signup_date\") AS VARCHAR) AS \"x\", CAST(SUM(\"nps_score\") AS DOUBLE) AS \"value\" FROM \"t_saas_metrics\" GROUP BY date_trunc('month', \"signup_date\") ORDER BY \"x\" ASC LIMIT 500",
+      "config": {},
+      "layout": {
+        "x": 0,
+        "y": 49,
+        "w": 6,
+        "h": 9
+      }
+    },
+    {
+      "id": "rrHNSjKO",
+      "type": "radar",
+      "title": "Multi-Metric Profile by Country",
+      "description": "Compare average key SaaS metrics across countries to profile market segments.",
+      "dataKey": "SELECT \"country\" AS axis, CAST(AVG(\"mrr\") AS DOUBLE) AS value FROM \"t_saas_metrics\" GROUP BY \"country\" ORDER BY value DESC LIMIT 12",
+      "config": {},
+      "layout": {
+        "x": 8,
+        "y": 0,
+        "w": 4,
+        "h": 8
+      }
+    },
+    {
+      "id": "tNU5L4mt",
+      "type": "dumbbell",
+      "title": "Health Score vs Nps Score by Country",
+      "description": "Compare average Health Score and average NPS Score across countries.",
+      "dataKey": "SELECT \"country\" AS label, CAST(AVG(\"health_score\") AS DOUBLE) AS value1, CAST(AVG(\"nps_score\") AS DOUBLE) AS value2 FROM \"t_saas_metrics\" GROUP BY \"country\" ORDER BY (value1 + value2) DESC LIMIT 20",
+      "config": {
+        "value1Label": "Health Score",
+        "value2Label": "Nps Score"
+      },
+      "layout": {
+        "x": 6,
+        "y": 49,
+        "w": 6,
+        "h": 9
+      }
+    }
+  ],
+  "createdAt": "2026-04-25T13:40:56.741Z"
+}

@@ -72,22 +72,15 @@ export function Sidebar() {
             className="truncate text-sm font-semibold"
             style={{ color: "var(--foreground)" }}
           >
-            DuckViz
+            Dashboards
           </span>
         </Link>
 
         {/* Dashboards */}
         <div className="flex-1 overflow-y-auto overflow-x-hidden py-3">
-          <p
-            className="mb-2 px-3 text-[10px] font-medium tracking-wider uppercase"
-            style={{ color: "var(--muted)" }}
-          >
-            Dashboards
-          </p>
-
           {dashboards.length === 0 ? (
             <p className="px-3 text-xs" style={{ color: "var(--muted)" }}>
-              No dashboards yet. Create one from the explorer.
+              No dashboards found in <code>data/dashboards/</code>.
             </p>
           ) : (
             <nav className="space-y-0.5 px-2">
@@ -120,6 +113,21 @@ export function Sidebar() {
             </nav>
           )}
         </div>
+
+        {/* Footer */}
+        <a
+          href="https://duckviz.com"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex flex-col gap-0.5 px-3 py-3 text-xs transition-colors hover:opacity-80"
+          style={{
+            borderTop: "1px solid var(--border)",
+            color: "var(--muted)",
+          }}
+        >
+          <span style={{ color: "var(--foreground)" }}>Built with DuckViz</span>
+          <span>Explore your data →</span>
+        </a>
       </aside>
     </>
   );

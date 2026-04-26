@@ -1,0 +1,210 @@
+{
+  "id": "3RnYVuybjr",
+  "name": "Energy Consumption Dashboard",
+  "datasetSlug": "energy-consumption",
+  "widgets": [
+    {
+      "id": "w5WW3lyh",
+      "type": "bar",
+      "title": "Rate Usd Per Kwh by Building Name",
+      "description": "Average electricity rate in USD per kWh grouped by building name",
+      "dataKey": "SELECT \"building_name\" AS label, AVG(\"rate_usd_per_kwh\") AS value FROM \"t_energy_consumption\" GROUP BY \"building_name\" ORDER BY value DESC LIMIT 25",
+      "config": {},
+      "layout": {
+        "x": 4,
+        "y": 0,
+        "w": 8,
+        "h": 9
+      }
+    },
+    {
+      "id": "APrZ7HJW",
+      "type": "line",
+      "title": "Rate Usd Per Kwh Over Reading Date",
+      "description": "Average rate in USD per kWh over time by reading date.",
+      "dataKey": "SELECT CAST(date_trunc('month', \"reading_date\") AS VARCHAR) AS x, AVG(\"rate_usd_per_kwh\") AS value FROM \"t_energy_consumption\" GROUP BY x ORDER BY x ASC",
+      "config": {},
+      "layout": {
+        "x": 0,
+        "y": 9,
+        "w": 7,
+        "h": 9
+      }
+    },
+    {
+      "id": "c3Xk01Eb",
+      "type": "donut",
+      "title": "Rate Usd Per Kwh Distribution by Building Type",
+      "description": "Distribution of average electricity rate (USD per kWh) by building type across all energy consumption records.",
+      "dataKey": "SELECT \"building_type\" AS label, AVG(\"rate_usd_per_kwh\") AS value FROM \"t_energy_consumption\" GROUP BY \"building_type\" ORDER BY value DESC LIMIT 10",
+      "config": {},
+      "layout": {
+        "x": 7,
+        "y": 9,
+        "w": 5,
+        "h": 9
+      }
+    },
+    {
+      "id": "XilzT4d0",
+      "type": "multi-line",
+      "title": "Cost Usd by Building Name Over Reading Date",
+      "description": "Trend of total cost in USD over reading dates for each building name.",
+      "dataKey": "SELECT CAST(date_trunc('day', \"reading_date\") AS VARCHAR) AS \"x\", \"building_name\" AS \"series\", CAST(SUM(\"cost_usd\") AS DOUBLE) AS \"value\" FROM \"t_energy_consumption\" GROUP BY \"x\", \"series\" ORDER BY \"x\" ASC, \"series\" ASC",
+      "config": {},
+      "layout": {
+        "x": 0,
+        "y": 18,
+        "w": 6,
+        "h": 9
+      }
+    },
+    {
+      "id": "ySl8MJeW",
+      "type": "big-number",
+      "title": "Total Rate Usd Per Kwh",
+      "description": "Sum of rate_usd_per_kwh across all energy consumption records",
+      "dataKey": "SELECT 'Total Rate Usd Per Kwh' AS label, CAST(SUM(\"rate_usd_per_kwh\") AS DOUBLE) AS value, 0.0 AS delta, 'positive' AS sentiment, 'overall' AS delta_basis FROM \"t_energy_consumption\" LIMIT 1",
+      "config": {},
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "w": 4,
+        "h": 9
+      }
+    },
+    {
+      "id": "rAZVZoZA",
+      "type": "histogram",
+      "title": "Cost Usd Frequency Distribution",
+      "description": "Histogram showing the frequency distribution of cost_usd values in the energy consumption data.",
+      "dataKey": "SELECT CAST(FLOOR(\"cost_usd\" / 10) * 10 AS VARCHAR) || ' - ' || CAST(FLOOR(\"cost_usd\" / 10) * 10 + 9.99 AS VARCHAR) AS bucket, CAST(COUNT(*) AS DOUBLE) AS count FROM \"t_energy_consumption\" GROUP BY bucket ORDER BY CAST(SPLIT_PART(bucket, ' - ', 1) AS DOUBLE) ASC",
+      "config": {},
+      "layout": {
+        "x": 6,
+        "y": 18,
+        "w": 6,
+        "h": 9
+      }
+    },
+    {
+      "id": "_RHvR_GB",
+      "type": "heatmap",
+      "title": "Building Name × Building Type Heatmap",
+      "description": "Heatmap showing total kWh consumed by each building name and building type combination.",
+      "dataKey": "SELECT \"building_name\" AS row, \"building_type\" AS col, CAST(SUM(\"kwh_consumed\") AS DOUBLE) AS value FROM \"t_energy_consumption\" GROUP BY \"building_name\", \"building_type\" ORDER BY value DESC LIMIT 400",
+      "config": {},
+      "layout": {
+        "x": 0,
+        "y": 27,
+        "w": 12,
+        "h": 10
+      }
+    },
+    {
+      "id": "62AM-dy7",
+      "type": "scatter",
+      "title": "Rate Usd Per Kwh vs Cost Usd Correlation",
+      "description": "Scatter plot showing the correlation between rate in USD per kWh and total cost in USD for energy consumption records.",
+      "dataKey": "SELECT CAST(\"rate_usd_per_kwh\" AS DOUBLE) AS x, CAST(\"cost_usd\" AS DOUBLE) AS y FROM \"t_energy_consumption\" WHERE \"rate_usd_per_kwh\" IS NOT NULL AND \"cost_usd\" IS NOT NULL LIMIT 1000",
+      "config": {
+        "xAxisLabel": "Rate Usd Per Kwh",
+        "yAxisLabel": "Cost Usd"
+      },
+      "layout": {
+        "x": 0,
+        "y": 37,
+        "w": 6,
+        "h": 9
+      }
+    },
+    {
+      "id": "eUMezqOU",
+      "type": "stacked-bar",
+      "title": "Building Name Composition by Building Type",
+      "description": "Stacked bar chart showing total kWh consumed per building name grouped by building type.",
+      "dataKey": "SELECT \"building_name\" AS label, \"building_type\" AS \"group\", CAST(SUM(\"kwh_consumed\") AS DOUBLE) AS value FROM \"t_energy_consumption\" GROUP BY label, \"group\" ORDER BY value DESC LIMIT 25",
+      "config": {},
+      "layout": {
+        "x": 6,
+        "y": 37,
+        "w": 6,
+        "h": 9
+      }
+    },
+    {
+      "id": "tT1KBhlZ",
+      "type": "area",
+      "title": "Cost Usd Volume Over Reading Date",
+      "description": "Daily total cost in USD aggregated over reading_date.",
+      "dataKey": "SELECT CAST(date_trunc('day', \"reading_date\") AS VARCHAR) AS \"x\", CAST(SUM(\"cost_usd\") AS DOUBLE) AS \"value\" FROM \"t_energy_consumption\" GROUP BY date_trunc('day', \"reading_date\") ORDER BY \"x\" ASC",
+      "config": {},
+      "layout": {
+        "x": 0,
+        "y": 46,
+        "w": 6,
+        "h": 9
+      }
+    },
+    {
+      "id": "p-0MNYaE",
+      "type": "horizontal-bar",
+      "title": "Building Name Ranked by Cost Usd",
+      "description": "Top 25 buildings ranked by total cost in USD from energy consumption.",
+      "dataKey": "SELECT \"building_name\" AS label, CAST(SUM(\"cost_usd\") AS DOUBLE) AS value FROM \"t_energy_consumption\" GROUP BY \"building_name\" ORDER BY value DESC LIMIT 25",
+      "config": {},
+      "layout": {
+        "x": 6,
+        "y": 46,
+        "w": 6,
+        "h": 9
+      }
+    },
+    {
+      "id": "r-UC8PUK",
+      "type": "dumbbell",
+      "title": "Rate Usd Per Kwh vs Cost Usd by Building Name",
+      "description": "Comparison of average rate per kWh and total cost in USD for each building.",
+      "dataKey": "SELECT \"building_name\" AS label, AVG(\"rate_usd_per_kwh\") AS value1, SUM(\"cost_usd\") AS value2 FROM \"t_energy_consumption\" GROUP BY \"building_name\" ORDER BY (value1 + value2) DESC LIMIT 20",
+      "config": {
+        "value1Label": "Rate Usd Per Kwh",
+        "value2Label": "Cost Usd"
+      },
+      "layout": {
+        "x": 0,
+        "y": 55,
+        "w": 6,
+        "h": 9
+      }
+    },
+    {
+      "id": "gTmHGBjj",
+      "type": "stacked-area",
+      "title": "Building Name Composition Over Reading Date",
+      "description": "Stacked area chart showing total kWh consumed per building name over reading dates.",
+      "dataKey": "SELECT CAST(\"reading_date\" AS VARCHAR) AS x, \"building_name\" AS series, CAST(SUM(\"kwh_consumed\") AS DOUBLE) AS value FROM \"t_energy_consumption\" GROUP BY x, series ORDER BY x ASC, series ASC",
+      "config": {},
+      "layout": {
+        "x": 6,
+        "y": 55,
+        "w": 6,
+        "h": 9
+      }
+    },
+    {
+      "id": "F92yvl1h",
+      "type": "treemap",
+      "title": "Energy Star Score Proportion by Building Name",
+      "description": "Proportion of total Energy Star Score aggregated by building name.",
+      "dataKey": "SELECT \"building_name\" AS label, CAST(SUM(\"energy_star_score\") AS DOUBLE) AS value FROM \"t_energy_consumption\" GROUP BY \"building_name\" ORDER BY value DESC LIMIT 30",
+      "config": {},
+      "layout": {
+        "x": 0,
+        "y": 64,
+        "w": 12,
+        "h": 10
+      }
+    }
+  ],
+  "createdAt": "2026-04-26T12:28:52.031Z"
+}
