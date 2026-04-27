@@ -24,6 +24,9 @@ interface ThemeContextValue {
 
 const ThemeContext = createContext<ThemeContextValue | null>(null);
 
+// Custom themes come first in the picker; ALL_PRESETS contributes the
+// built-in DuckViz presets behind them. Reorder this array to control
+// the dropdown order, or prepend more entries to add your own.
 const PRESETS: readonly DuckvizThemePreset[] = [github, ...ALL_PRESETS];
 
 export function ThemeContextProvider({ children }: { children: ReactNode }) {

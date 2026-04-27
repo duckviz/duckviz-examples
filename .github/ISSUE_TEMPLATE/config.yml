@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Product question (DuckViz library, dashboards, SDK)
+    url: https://docs.duckviz.com
+    about: This repo is for examples. For product questions, check the docs first.
+  - name: Discussion
+    url: https://github.com/duckviz/duckviz-examples/discussions
+    about: Open-ended questions, ideas, "how do I..." — start a Discussion.
+  - name: Security issue
+    url: https://github.com/duckviz/duckviz-examples/security/policy
+    about: Found a vulnerability? See SECURITY.md and email vikas@duckviz.com.

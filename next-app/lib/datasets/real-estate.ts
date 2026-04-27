@@ -1,31 +1,33 @@
 import { createFaker, clamp, logNormal, round } from "./faker-utils";
 
-// US metros with 2024-2025 median sale prices (Zillow/Redfin-style) and price-per-sqft anchors
+// US metros with 2024-2025 median sale prices (Zillow/Redfin-style) and price-per-sqft anchors.
+// `lat`/`lon` are the city centroid — listings jitter ±0.08° (~9 km) around this so
+// the geo-map renders bubbles on the right city instead of faker's random global coords.
 const METROS = [
-  { city: "San Francisco", state: "CA", medianPrice: 1_350_000, pricePerSqft: 1050, inventory: "low", w: 8 },
-  { city: "San Jose", state: "CA", medianPrice: 1_480_000, pricePerSqft: 1120, inventory: "low", w: 6 },
-  { city: "Los Angeles", state: "CA", medianPrice: 940_000, pricePerSqft: 715, inventory: "medium", w: 10 },
-  { city: "San Diego", state: "CA", medianPrice: 975_000, pricePerSqft: 810, inventory: "low", w: 5 },
-  { city: "Seattle", state: "WA", medianPrice: 880_000, pricePerSqft: 615, inventory: "medium", w: 7 },
-  { city: "New York", state: "NY", medianPrice: 825_000, pricePerSqft: 1250, inventory: "low", w: 10 },
-  { city: "Boston", state: "MA", medianPrice: 780_000, pricePerSqft: 785, inventory: "low", w: 6 },
-  { city: "Washington", state: "DC", medianPrice: 680_000, pricePerSqft: 565, inventory: "medium", w: 5 },
-  { city: "Denver", state: "CO", medianPrice: 610_000, pricePerSqft: 395, inventory: "medium", w: 5 },
-  { city: "Austin", state: "TX", medianPrice: 560_000, pricePerSqft: 305, inventory: "high", w: 7 },
-  { city: "Dallas", state: "TX", medianPrice: 405_000, pricePerSqft: 230, inventory: "medium", w: 6 },
-  { city: "Houston", state: "TX", medianPrice: 345_000, pricePerSqft: 195, inventory: "medium", w: 6 },
-  { city: "Phoenix", state: "AZ", medianPrice: 470_000, pricePerSqft: 285, inventory: "high", w: 5 },
-  { city: "Miami", state: "FL", medianPrice: 625_000, pricePerSqft: 475, inventory: "medium", w: 6 },
-  { city: "Tampa", state: "FL", medianPrice: 420_000, pricePerSqft: 275, inventory: "medium", w: 4 },
-  { city: "Atlanta", state: "GA", medianPrice: 425_000, pricePerSqft: 245, inventory: "medium", w: 6 },
-  { city: "Nashville", state: "TN", medianPrice: 465_000, pricePerSqft: 270, inventory: "medium", w: 4 },
-  { city: "Charlotte", state: "NC", medianPrice: 405_000, pricePerSqft: 225, inventory: "medium", w: 4 },
-  { city: "Chicago", state: "IL", medianPrice: 345_000, pricePerSqft: 260, inventory: "high", w: 6 },
-  { city: "Minneapolis", state: "MN", medianPrice: 365_000, pricePerSqft: 215, inventory: "medium", w: 3 },
-  { city: "Portland", state: "OR", medianPrice: 560_000, pricePerSqft: 365, inventory: "medium", w: 3 },
-  { city: "Detroit", state: "MI", medianPrice: 90_000, pricePerSqft: 105, inventory: "high", w: 3 },
-  { city: "Cleveland", state: "OH", medianPrice: 135_000, pricePerSqft: 125, inventory: "high", w: 2 },
-  { city: "Indianapolis", state: "IN", medianPrice: 245_000, pricePerSqft: 150, inventory: "medium", w: 2 },
+  { city: "San Francisco", state: "CA", lat: 37.7749, lon: -122.4194, medianPrice: 1_350_000, pricePerSqft: 1050, inventory: "low", w: 8 },
+  { city: "San Jose", state: "CA", lat: 37.3382, lon: -121.8863, medianPrice: 1_480_000, pricePerSqft: 1120, inventory: "low", w: 6 },
+  { city: "Los Angeles", state: "CA", lat: 34.0522, lon: -118.2437, medianPrice: 940_000, pricePerSqft: 715, inventory: "medium", w: 10 },
+  { city: "San Diego", state: "CA", lat: 32.7157, lon: -117.1611, medianPrice: 975_000, pricePerSqft: 810, inventory: "low", w: 5 },
+  { city: "Seattle", state: "WA", lat: 47.6062, lon: -122.3321, medianPrice: 880_000, pricePerSqft: 615, inventory: "medium", w: 7 },
+  { city: "New York", state: "NY", lat: 40.7128, lon: -74.0060, medianPrice: 825_000, pricePerSqft: 1250, inventory: "low", w: 10 },
+  { city: "Boston", state: "MA", lat: 42.3601, lon: -71.0589, medianPrice: 780_000, pricePerSqft: 785, inventory: "low", w: 6 },
+  { city: "Washington", state: "DC", lat: 38.9072, lon: -77.0369, medianPrice: 680_000, pricePerSqft: 565, inventory: "medium", w: 5 },
+  { city: "Denver", state: "CO", lat: 39.7392, lon: -104.9903, medianPrice: 610_000, pricePerSqft: 395, inventory: "medium", w: 5 },
+  { city: "Austin", state: "TX", lat: 30.2672, lon: -97.7431, medianPrice: 560_000, pricePerSqft: 305, inventory: "high", w: 7 },
+  { city: "Dallas", state: "TX", lat: 32.7767, lon: -96.7970, medianPrice: 405_000, pricePerSqft: 230, inventory: "medium", w: 6 },
+  { city: "Houston", state: "TX", lat: 29.7604, lon: -95.3698, medianPrice: 345_000, pricePerSqft: 195, inventory: "medium", w: 6 },
+  { city: "Phoenix", state: "AZ", lat: 33.4484, lon: -112.0740, medianPrice: 470_000, pricePerSqft: 285, inventory: "high", w: 5 },
+  { city: "Miami", state: "FL", lat: 25.7617, lon: -80.1918, medianPrice: 625_000, pricePerSqft: 475, inventory: "medium", w: 6 },
+  { city: "Tampa", state: "FL", lat: 27.9506, lon: -82.4572, medianPrice: 420_000, pricePerSqft: 275, inventory: "medium", w: 4 },
+  { city: "Atlanta", state: "GA", lat: 33.7490, lon: -84.3880, medianPrice: 425_000, pricePerSqft: 245, inventory: "medium", w: 6 },
+  { city: "Nashville", state: "TN", lat: 36.1627, lon: -86.7816, medianPrice: 465_000, pricePerSqft: 270, inventory: "medium", w: 4 },
+  { city: "Charlotte", state: "NC", lat: 35.2271, lon: -80.8431, medianPrice: 405_000, pricePerSqft: 225, inventory: "medium", w: 4 },
+  { city: "Chicago", state: "IL", lat: 41.8781, lon: -87.6298, medianPrice: 345_000, pricePerSqft: 260, inventory: "high", w: 6 },
+  { city: "Minneapolis", state: "MN", lat: 44.9778, lon: -93.2650, medianPrice: 365_000, pricePerSqft: 215, inventory: "medium", w: 3 },
+  { city: "Portland", state: "OR", lat: 45.5152, lon: -122.6784, medianPrice: 560_000, pricePerSqft: 365, inventory: "medium", w: 3 },
+  { city: "Detroit", state: "MI", lat: 42.3314, lon: -83.0458, medianPrice: 90_000, pricePerSqft: 105, inventory: "high", w: 3 },
+  { city: "Cleveland", state: "OH", lat: 41.4993, lon: -81.6944, medianPrice: 135_000, pricePerSqft: 125, inventory: "high", w: 2 },
+  { city: "Indianapolis", state: "IN", lat: 39.7684, lon: -86.1581, medianPrice: 245_000, pricePerSqft: 150, inventory: "medium", w: 2 },
 ];
 
 const PROPERTY_TYPES = [
@@ -109,8 +111,11 @@ export function generateRealEstate(count = 1200) {
       city: metro.city,
       state: metro.state,
       zip_code: f.location.zipCode(),
-      latitude: round(f.location.latitude(), 5),
-      longitude: round(f.location.longitude(), 5),
+      // Anchor to the metro centroid with ±0.08° (~9 km) jitter so the
+      // geo-map plots listings on the actual city. faker's location.latitude()
+      // is uniform across the globe and breaks any city↔coords correspondence.
+      latitude: round(metro.lat + f.number.float({ min: -0.08, max: 0.08, fractionDigits: 5 }), 5),
+      longitude: round(metro.lon + f.number.float({ min: -0.08, max: 0.08, fractionDigits: 5 }), 5),
       property_type: propType.type,
       property_type_label: propType.label,
       listing_status: status,

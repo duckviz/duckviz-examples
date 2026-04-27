@@ -2,6 +2,27 @@
   "name": "duckviz-next-example",
   "version": "0.1.0",
   "private": true,
+  "description": "DuckViz dashboard example — Next.js 15 app with JSON-driven dashboards and faker-generated datasets.",
+  "keywords": [
+    "duckviz",
+    "duckdb",
+    "duckdb-wasm",
+    "dashboard",
+    "data-visualization",
+    "nextjs",
+    "example"
+  ],
+  "homepage": "https://github.com/duckviz/duckviz-examples/tree/main/next-app#readme",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/duckviz/duckviz-examples.git",
+    "directory": "next-app"
+  },
+  "bugs": {
+    "url": "https://github.com/duckviz/duckviz-examples/issues"
+  },
+  "license": "MIT",
+  "author": "DuckViz",
   "type": "module",
   "scripts": {
     "dev": "next dev --turbopack",
@@ -15,7 +36,7 @@
     "@duckviz/db": "^0.7.0",
     "@duckviz/dashboard": "^0.9.0",
     "@duckviz/ui": "^0.6.11",
-    "@duckviz/widgets": "^0.8.0",
+    "@duckviz/widgets": "^0.8.1",
     "@faker-js/faker": "^10.4.0"
   },
   "devDependencies": {

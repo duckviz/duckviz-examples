@@ -1,0 +1,42 @@
+name: Bug report
+description: Something in an example doesn't work as documented.
+labels: [bug]
+body:
+  - type: dropdown
+    id: example
+    attributes:
+      label: Which example?
+      options:
+        - next-app
+        - other / N/A
+    validations:
+      required: true
+  - type: input
+    id: package-versions
+    attributes:
+      label: DuckViz package versions
+      description: Run `bun pm ls @duckviz/dashboard` (or check the example's package.json) and paste the resolved versions.
+      placeholder: "@duckviz/dashboard@0.9.2, @duckviz/db@0.7.4"
+    validations:
+      required: true
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: What did you run, what did you expect, what did you get?
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: Steps to reproduce
+      description: Numbered list of commands or actions starting from a fresh clone.
+    validations:
+      required: true
+  - type: input
+    id: env
+    attributes:
+      label: Environment
+      placeholder: "macOS 14.5, bun 1.1.30, Node 22.7, Chrome 130"
+    validations:
+      required: true

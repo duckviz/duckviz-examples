@@ -82,6 +82,9 @@ export default function DashboardPage() {
         <Dashboard
           config={config}
           datasets={datasets}
+          // Drop DuckDB tables on navigation so the next dashboard starts
+          // clean. Without this, stale `t_*` tables from a previous dashboard
+          // linger and can collide with same-named tables in the new one.
           dropTablesOnUnmount={true}
           onWidgetError={handleWidgetError}
           onReady={handleReady}

@@ -1,0 +1,25 @@
+name: New example request
+description: Suggest an example for a framework or use case we don't yet cover.
+labels: [enhancement]
+body:
+  - type: input
+    id: framework
+    attributes:
+      label: Framework or use case
+      placeholder: "Vite + React, Remix, SvelteKit, Astro islands, embedded in an Electron app, ..."
+    validations:
+      required: true
+  - type: textarea
+    id: motivation
+    attributes:
+      label: What does this example need to demonstrate?
+      description: Describe the specific integration pattern. Concrete API calls and constraints beat "would be nice."
+    validations:
+      required: true
+  - type: textarea
+    id: alt
+    attributes:
+      label: Alternatives you've considered
+      description: Have you tried adapting the next-app example? What didn't transfer?
+    validations:
+      required: false
