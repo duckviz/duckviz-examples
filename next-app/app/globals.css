@@ -1,7 +1,6 @@
 @import "tailwindcss";
 @import "@duckviz/ui/styles.css";
 @import "@duckviz/dashboard/styles.css";
-@import "@duckviz/report/styles.css";
 
 /*
  * Chrome tokens alias directly to --app-* tokens set by DuckvizThemeProvider.
