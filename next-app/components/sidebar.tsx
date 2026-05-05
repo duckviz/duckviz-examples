@@ -38,7 +38,7 @@ export function Sidebar() {
       {/* Mobile toggle */}
       <button
         onClick={() => setMobileOpen(!mobileOpen)}
-        className="fixed top-3 left-3 z-50 rounded-md p-2 md:hidden"
+        className="fixed top-2 left-2 z-50 rounded-md p-2 md:hidden"
         style={{ background: "var(--surface)", color: "var(--muted)" }}
       >
         <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
@@ -70,7 +70,10 @@ export function Sidebar() {
           <span className="text-xl leading-none">🧩</span>
           <span
             className="truncate text-sm font-semibold"
-            style={{ color: "var(--foreground)" }}
+            style={{
+              color: "var(--foreground)",
+              paddingLeft: mobileOpen ? "16px" : "0px",
+            }}
           >
             Dashboards
           </span>
